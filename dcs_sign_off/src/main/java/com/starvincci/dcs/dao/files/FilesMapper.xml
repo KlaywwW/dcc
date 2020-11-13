@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starvincci.dcs.dao.files.FilesMapper">
+    <insert id="addFile" parameterType="com.starvincci.dcs.pojo.files.Files">
+        INSERT INTO files VALUES (NULL ,#{filesName},#{filesPath},#{cdate},#{cuser},#{departmentId},#{isoNo},#{version},#{originalFileId},#{versionNo},#{dirId},#{userId})
+    </insert>
+
+    <select id="getAllFilesByDepIdAndDir" resultType="com.starvincci.dcs.pojo.files.Files">
+        SELECT * FROM files WHERE departmentId=#{departmentId} and dirId=#{dirId}
+    </select>
+
+    <select id="getAllFiles" resultType="com.starvincci.dcs.pojo.files.Files">
+        SELECT * FROM files
+    </select>
+
+    <select id="getFileByFileId" resultType="com.starvincci.dcs.pojo.files.Files">
+        SELECT * FROM files WHERE filesId=#{fileId}
+    </select>
+
+    <select id="fileIsExist" resultType="com.starvincci.dcs.pojo.files.Files">
+        SELECT * FROM files WHERE filesName=#{fileName}
+    </select>
+
+    <update id="updateFilesVersionId" parameterType="com.starvincci.dcs.pojo.files.Files">
+        update files set version=#{version} where filesId=#{filesId}
+    </update>
+
+    <select id="getFilesTop" resultType="com.starvincci.dcs.pojo.files.Files">
+        select * from files ORDER BY filesId DESC LIMIT 0,1
+    </select>
+    <select id="getAllFilesByDir" resultType="com.starvincci.dcs.pojo.files.Files">
+        SELECT * FROM files WHERE dirId=#{dirId}
+    </select>
+    <select id="getFilesVersion" resultType="com.starvincci.dcs.pojo.files.Files">
+        select * FROM files where originalFileId=#{originalFileId}
+    </select>
+
+</mapper>

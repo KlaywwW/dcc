@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starvincci.dcs.dao.record.RecordMapper">
+    <insert id="addRecord" parameterType="com.starvincci.dcs.pojo.record.Record">
+        INSERT INTO record VALUES (NULL ,#{applyName},#{applyDate},#{applyContent},#{applyStatus},#{applyPassDate},#{operator},#{inForce},#{userId},#{fileId})
+    </insert>
+
+    <select id="getRecordStatusOne" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where applyStatus=1
+    </select>
+
+    <select id="getRecordByStatus" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where applyStatus=#{stauts} and userId=#{userId}
+    </select>
+
+    <select id="findRecordOnly" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where userId=#{userId} and applyStatus=1 and fileId=#{fileId} and applyContent=#{applyContent}
+    </select>
+
+    <delete id="delRecord" parameterType="int">
+        DELETE from record where id=#{id}
+    </delete>
+
+    <update id="updateRecord" parameterType="com.starvincci.dcs.pojo.record.Record">
+        UPDATE record set applyStatus=#{applyStatus},operator=#{operator},applyPassDate=#{applyPassDate} where id=#{id}
+    </update>
+
+    <select id="findRecordOnlyApply" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where applyStatus=1 and fileId=#{fileId} and applyContent=#{applyContent}
+    </select>
+
+    <select id="findRecordOnlyPass" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where applyStatus=2 and fileId=#{fileId} and applyContent=#{applyContent}
+    </select>
+    <update id="updateRecordOut" parameterType="com.starvincci.dcs.pojo.record.Record">
+        UPDATE record set applyStatus=4 where id=#{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.starvincci.dcs.dao.record.LogMapper">
+
+    <insert id="addLog" parameterType="com.starvincci.dcs.pojo.record.Log">
+        INSERT INTO log VALUES (NULL ,#{operationContent},#{operationDate},#{userId})
+    </insert>
+    <select id="getLogListByUser" resultType="com.starvincci.dcs.pojo.record.Log">
+        SELECT * FROM log WHERE userId=#{userId}
+    </select>
+
+
+</mapper>

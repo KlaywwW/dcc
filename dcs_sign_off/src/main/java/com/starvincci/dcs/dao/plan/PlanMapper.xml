@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.starvincci.dcs.dao.plan.PlanMapper">
+    <insert id="addPlan" parameterType="com.starvincci.dcs.pojo.plan.Plan">
+        INSERT INTO plan VALUES (null,#{content},#{dirId},#{userId},#{isFinish})
+    </insert>
+
+    <insert id="addPlanGather" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
+        INSERT INTO plan_gather VALUES (null,#{gatherPlanTime},#{userId},#{planId})
+    </insert>
+
+    <insert id="addPlanAuth" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
+        INSERT INTO plan_auth VALUES (null,#{authPlanTime},#{userId},#{authActualTime},#{authUserId},#{planId})
+    </insert>
+
+    <insert id="addPlanCheck" parameterType="com.starvincci.dcs.pojo.plan.PlanCheck">
+        INSERT INTO plan_check VALUES (null,#{checkPlanTime},#{userId},#{checkActualTime},#{checkUserId},#{planId})
+    </insert>
+
+
+    <update id="updatePlanGather" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
+        update plan_gather SET
+        <if test="gatherPlanTime!=null">
+            gatherPlanTime=#{gatherPlanTime}
+        </if>
+        where planId=#{planId}
+    </update>
+    <update id="updatePlanAuth" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
+        update plan_auth SET
+        <if test="authActualTime!=null">
+            authActualTime=#{authActualTime},authUserId=#{authUserId},authPlanTime=authPlanTime
+        </if>
+        <if test="authPlanTime!=null">
+            authActualTime=authActualTime,authPlanTime=#{authPlanTime}
+        </if>
+        where planId=#{planId}
+    </update>
+    <update id="updatePlanCheck" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
+        update plan_check SET
+        <if test="checkActualTime!=null">
+            checkActualTime=#{checkActualTime},checkUserId=#{checkUserId},checkPlanTime=checkPlanTime
+        </if>
+        <if test="checkPlanTime!=null">
+            checkPlanTime=#{checkPlanTime},checkActualTime=checkActualTime
+        </if>
+        where planId=#{planId}
+    </update>
+    <update id="updatePlanPass">
+       update plan set isFinish=2 where id=#{id}
+    </update>
+    <update id="updatePlanAuthEmpty" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
+ update plan_auth SET authPlanTime=NULL,userId=NULL,authActualTime=NULL,authUserId=NULL where planId=#{planId}
+    </update>
+    <update id="updatePlanCheckEmpty" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
+ update plan_check SET checkPlanTime=NULL,userId=NULL,checkActualTime=NULL,checkUserId=NULL where planId=#{planId}
+    </update>
+    <update id="updatePlanAuthWithUser"  parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
+        update plan_auth SET authPlanTime=#{authPlanTime},authActualTime=authActualTime,userId=#{userId}
+        where planId=#{planId}
+    </update>
+    <update id="updatePlanCheckWithUser" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
+        update plan_check SET checkPlanTime=#{checkPlanTime},checkActualTime=checkActualTime,userId=#{userId}
+        where planId=#{planId}
+    </update>
+
+
+    <select id="getPlanByDirId" resultType="com.starvincci.dcs.pojo.plan.Plan">
+        SELECT * FROM plan WHERE 1=1 AND isFinish=1
+        <if test="dirId!=null and dirId!=0">and dirId=#{dirId}</if>
+    </select>
+    <select id="getPlanAuthById" resultType="com.starvincci.dcs.pojo.plan.PlanAuth">
+        SELECT * FROM plan_auth WHERE planId=#{planId}
+    </select>
+    <select id="getPlanGatherById" resultType="com.starvincci.dcs.pojo.plan.PlanGather">
+        SELECT * FROM plan_gather WHERE planId=#{planId}
+    </select>
+    <select id="getPlanCheckById" resultType="com.starvincci.dcs.pojo.plan.PlanCheck">
+        SELECT * FROM plan_check WHERE planId=#{planId}
+    </select>
+    <select id="getPlanTop" resultType="com.starvincci.dcs.pojo.plan.Plan">
+        SELECT * FROM plan ORDER BY id desc LIMIT 0,1
+    </select>
+    <select id="getSamePlan" resultType="com.starvincci.dcs.pojo.plan.Plan">
+        SELECT * FROM plan where content=#{content} AND isFinish=1
+    </select>
+    <select id="getPlanFinish" resultType="com.starvincci.dcs.pojo.plan.Plan">
+        SELECT * FROM plan WHERE isFinish=2 AND dirId=#{dirId}
+    </select>
+
+
+</mapper>

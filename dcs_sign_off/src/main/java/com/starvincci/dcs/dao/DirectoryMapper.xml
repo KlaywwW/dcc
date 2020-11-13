@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.starvincci.dcs.dao.DirectoryMapper">
+
+    <select id="getAllDir" resultType="com.starvincci.dcs.pojo.Directory">
+        SELECT * FROM  directory
+    </select>
+    <select id="getDirById" resultType="com.starvincci.dcs.pojo.Directory">
+        SELECT * FROM  directory WHERE id=#{id}
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starvincci.dcs.dao.user.UserRoleMapper">
+
+
+    <select id="getAllUserRole" resultMap="role">
+        SELECT * FROM user_role ur
+        INNER JOIN roles r on ur.roleId=r.roleId where ur.userId=#{userId}
+    </select>
+    <resultMap id="role" type="com.starvincci.dcs.pojo.user.UserRole">
+        <result property="id" column="id"></result>
+        <result property="userId" column="userId"></result>
+        <result property="roleId" column="roleId"></result>
+        <association property="roles" javaType="com.starvincci.dcs.pojo.user.Roles">
+            <result column="roleName" property="roleName"></result>
+            <result column="roleCode" property="roleCode"></result>
+        </association>
+    </resultMap>
+
+    <insert id="addUserRole">
+        INSERT INTO user_role VALUES (null,#{userId},#{roleId})
+    </insert>
+    <update id="updateUserRole" parameterType="com.starvincci.dcs.pojo.user.UserRole">
+        UPDATE user_role SET roleId=#{roleId} WHERE userId=#{userId}
+    </update>
+
+    <select id="getAllRoles" resultType="com.starvincci.dcs.pojo.user.Roles">
+        SELECT * from roles WHERE roleId !=1
+    </select>
+
+
+    <select id="getUserRoleById" resultMap="rol">
+        SELECT * FROM user_role ur INNER JOIN roles r ON ur.`roleId` = r.`roleId`  WHERE ur.id=#{id}
+    </select>
+    <resultMap id="rol" type="com.starvincci.dcs.pojo.user.UserRole">
+
+        <result column="id" property="id"></result>
+        <result column="userId" property="userId"></result>
+        <association property="roles" javaType="com.starvincci.dcs.pojo.user.Roles">
+            <result column="roleId" property="roleId"></result>
+            <result column="roleName" property="roleName"></result>
+            <result column="roleCode" property="roleCode"></result>
+        </association>
+    </resultMap>
+</mapper>

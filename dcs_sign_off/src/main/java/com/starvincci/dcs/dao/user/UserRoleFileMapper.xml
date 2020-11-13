@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starvincci.dcs.dao.user.UserRoleFileMapper">
+    <select id="getAllByUserRoleId" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
+      SELECT * FROM user_role_file WHERE userRoleId=#{userRoleId}
+  </select>
+
+    <select id="getUserRoleFileOnly" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
+      SELECT * FROM user_role_file WHERE userRoleId=#{userRoleId} and fileId=#{fileId}
+    </select>
+    <insert id="addUserRoleFile" parameterType="com.starvincci.dcs.pojo.user.UserRoleFile">
+        INSERT INTO user_role_file VALUES (null,#{userRoleId},#{fileId},#{inForce})
+    </insert>
+
+    <select id="getUserRoleFileByFileId" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
+         SELECT * FROM user_role_file WHERE fileId=#{fileId}
+    </select>
+
+</mapper>
