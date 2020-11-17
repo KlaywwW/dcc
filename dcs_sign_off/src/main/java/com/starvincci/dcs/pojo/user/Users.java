@@ -1,6 +1,8 @@
 package com.starvincci.dcs.pojo.user;
 
 
+import com.starvincci.dcs.pojo.menu.UserMenu;
+
 import java.util.List;
 
 public class Users {
@@ -12,9 +14,18 @@ public class Users {
   private String username;
   private Integer age;
   private Integer isStatus;
-  private String wxUid;
+  private Integer dirId;
   private Department department;
   private List<UserRole> userRoleList;
+  private List<UserMenu> userMenuList;
+
+  public List<UserMenu> getUserMenuList() {
+    return userMenuList;
+  }
+
+  public void setUserMenuList(List<UserMenu> userMenuList) {
+    this.userMenuList = userMenuList;
+  }
 
   public List<UserRole> getUserRoleList() {
     return userRoleList;
@@ -89,11 +100,11 @@ public class Users {
 
   public void setIsStatus(Integer isStatus){ this.isStatus=isStatus; }
 
-  public String getWxUid() {
-    return wxUid;
+  public Integer getDirId() {
+    return dirId;
   }
 
-  public void setWxUid(String wxUid) {
-    this.wxUid = wxUid;
+  public void setDirId(Integer dirId) {
+    this.dirId = dirId;
   }
 }

@@ -6,8 +6,9 @@
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{ name }}</div>
+                            <div class="user-info-name">{{ account }}</div>
                             <div>{{ role }}</div>
+                            <div>{{ name }}</div>
                         </div>
                     </div>
                     <div style="margin-top: 60px">
@@ -202,12 +203,20 @@ export default {
             }
             return roleName;
         },
-        name() {
+        account() {
             let userData = sessionStorage.getItem('userData');
             if (userData == null) {
                 return '请登录';
             } else {
                 return JSON.parse(userData).user.account;
+            }
+        },
+        name() {
+            let userData = sessionStorage.getItem('userData');
+            if (userData == null) {
+                return '请登录';
+            } else {
+                return JSON.parse(userData).user.username;
             }
         }
     },
@@ -235,7 +244,7 @@ export default {
                 this.$notify({
                     // title: '今日待办事项',
                     dangerouslyUseHTMLString: true,
-                    message: '今日待办事项数量    '+'<strong style="color:red;font-size:20px">'+res.data.count+'</strong>',
+                    message: '今日待办事项数量    ' + '<strong style="color:red;font-size:20px">' + res.data.count + '</strong>',
                     duration: 20000,
                     type: 'warning'
                 });

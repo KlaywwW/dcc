@@ -101,7 +101,7 @@ export default new Router({
                     path: '/process',
 					component: () => import('../components/page/new/document/process.vue'),
 					meta: {
-						title: '文件认证计划'
+						title: '认证计划'
 					}
                     
                 }

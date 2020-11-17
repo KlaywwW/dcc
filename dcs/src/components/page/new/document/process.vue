@@ -11,18 +11,11 @@
                             </div>
                         </el-card>
                     </el-col>
+                   
                     <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{ numSecond }}</div>
-                                <div class="title">品管作业指导书</div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-card shadow="hover">
-                            <div>
-                                <div class="num">{{ numThird }}</div>
+                                <div class="num">{{  numSecond}}</div>
                                 <div class="title">流程作业指导书</div>
                             </div>
                         </el-card>
@@ -30,7 +23,7 @@
                     <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{ numFourth }}</div>
+                                <div class="num">{{ numThird }}</div>
                                 <div class="title">工序标准作业票</div>
                             </div>
                         </el-card>
@@ -38,8 +31,16 @@
                     <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{ numFifth }}</div>
+                                <div class="num">{{ numFourth}}</div>
                                 <div class="title">设备操作规范</div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                     <el-col :span="4">
+                        <el-card shadow="hover">
+                            <div>
+                                <div class="num">{{  numFifth  }}</div>
+                                <div class="title">品管作业指导书</div>
                             </div>
                         </el-card>
                     </el-col>
@@ -56,7 +57,7 @@
             <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
                 <el-tab-pane label="首页" name="first">
                     <div>
-                        <el-button type="primary" @click="addPlan">添加认证计划</el-button>
+                        <el-button type="primary" @click="addPlan">添加计划</el-button>
                     </div>
                     <div>
                         <el-divider content-position="left"></el-divider>
@@ -69,11 +70,28 @@
                                 :cell-style="cellStyle"
                                 :header-cell-style="tableHeaderColor"
                             >
-                                <el-table-column prop="dirName" label="认证项目" width="120"></el-table-column>
+                                <el-table-column prop="dirName" label="四大标准" width="120"></el-table-column>
                                 <el-table-column type="index" label="No" width="40"></el-table-column>
-                                <el-table-column prop="content" label="认证内容"></el-table-column>
+                                <el-table-column prop="content" label="认证项目"></el-table-column>
                                 <el-table-column label="收集资料">
-                                    <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
+                                    <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                    <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
+                                    <el-table-column prop="planGather.username" label="实际完成时间">
+                                        <template slot-scope="scope" width="100">
+                                            <div v-if="scope.row.planGather != null">
+                                                {{ scope.row.planGather.actualTime }}
+                                                <div
+                                                    v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null"
+                                                >
+                                                    <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                        >确认完成</el-button
+                                                    >
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
                                     <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
                                 </el-table-column>
                                 <el-table-column label="审核认证">
@@ -82,7 +100,7 @@
                                         <template slot-scope="scope">
                                             <div v-if="scope.row.planAuth != null">
                                                 <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                    <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                    {{ item.username }}
                                                 </div>
                                             </div>
                                         </template>
@@ -96,7 +114,7 @@
                                                         scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null
                                                     "
                                                 >
-                                                    <el-button type="primary" plain size="mini" @click="verify(scope.row)"
+                                                    <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
                                                         >确认完成</el-button
                                                     >
                                                 </div>
@@ -110,7 +128,7 @@
                                         <template slot-scope="scope">
                                             <div v-if="scope.row.planCheck != null">
                                                 <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                    <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                    {{ item.username }}
                                                 </div>
                                             </div>
                                         </template>
@@ -122,20 +140,13 @@
                                         <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                             <el-row>
                                                 <el-col :span="24"
-                                                    ><el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 1)"
-                                                        >设定认证计划时间</el-button
-                                                    ></el-col
-                                                >
-                                            </el-row>
-                                            <el-row v-if="scope.row.planGather.gatherActualTime == null">
-                                                <el-col :span="24">
-                                                    <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
-                                                        >修改收集计划时间</el-button
+                                                    ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                        >设定计划送审时间</el-button
                                                     ></el-col
                                                 >
                                             </el-row>
                                         </div>
-                                        <div v-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                        <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                             <el-row>
                                                 <el-col :span="24">
                                                     <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
@@ -173,7 +184,7 @@
                         </div>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="品管作业指导书" name="second">
+                <el-tab-pane label="流程作业指导书" name="second">
                     <div>
                         <el-table
                             :data="tabTableData"
@@ -183,23 +194,33 @@
                             :header-cell-style="tabTableHeaderColor"
                         >
                             <el-table-column type="index" label="No" width="40"></el-table-column>
-                            <el-table-column prop="content" label="认证内容"></el-table-column>
+                            <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
-                                <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
-                                <el-table-column
-                                    prop="planGather.gatherPlanTime"
-                                    sortable
-                                    label="计划送审时间"
-                                    width="136"
-                                ></el-table-column>
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
+                                <el-table-column prop="planGather.username" label="实际完成时间">
+                                    <template slot-scope="scope" width="100">
+                                        <div v-if="scope.row.planGather != null">
+                                            {{ scope.row.planGather.actualTime }}
+                                            <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -211,19 +232,21 @@
                                             <div
                                                 v-if="scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null"
                                             >
-                                                <el-button type="primary" plain size="mini" @click="verify(scope.row)">确认完成</el-button>
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
+                                                    >确认完成</el-button
+                                                >
                                             </div>
                                         </div>
                                     </template>
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -235,20 +258,13 @@
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
                                             <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 1)"
-                                                    >设定认证计划时间</el-button
-                                                ></el-col
-                                            >
-                                        </el-row>
-                                        <el-row v-if="scope.row.planGather.gatherActualTime == null">
-                                            <el-col :span="24">
-                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
-                                                    >修改收集计划时间</el-button
+                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                    >设定计划送审时间</el-button
                                                 ></el-col
                                             >
                                         </el-row>
                                     </div>
-                                    <div v-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                    <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
                                                 <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
@@ -283,7 +299,7 @@
                         </el-table>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="流程作业指导书" name="third">
+                <el-tab-pane label="工序标准作业票" name="third">
                     <div>
                         <el-table
                             :data="tabTableData"
@@ -293,23 +309,33 @@
                             :header-cell-style="tabTableHeaderColor"
                         >
                             <el-table-column type="index" label="No" width="40"></el-table-column>
-                            <el-table-column prop="content" label="认证内容"></el-table-column>
+                            <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
-                                <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
-                                <el-table-column
-                                    prop="planGather.gatherPlanTime"
-                                    sortable
-                                    label="计划送审时间"
-                                    width="136"
-                                ></el-table-column>
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
+                                <el-table-column prop="planGather.username" label="实际完成时间">
+                                    <template slot-scope="scope" width="100">
+                                        <div v-if="scope.row.planGather != null">
+                                            {{ scope.row.planGather.actualTime }}
+                                            <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -321,19 +347,21 @@
                                             <div
                                                 v-if="scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null"
                                             >
-                                                <el-button type="primary" plain size="mini" @click="verify(scope.row)">确认完成</el-button>
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
+                                                    >确认完成</el-button
+                                                >
                                             </div>
                                         </div>
                                     </template>
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -345,20 +373,13 @@
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
                                             <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 1)"
-                                                    >设定认证计划时间</el-button
-                                                ></el-col
-                                            >
-                                        </el-row>
-                                        <el-row v-if="scope.row.planGather.gatherActualTime == null">
-                                            <el-col :span="24">
-                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
-                                                    >修改收集计划时间</el-button
+                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                    >设定计划送审时间</el-button
                                                 ></el-col
                                             >
                                         </el-row>
                                     </div>
-                                    <div v-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                    <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
                                                 <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
@@ -393,7 +414,7 @@
                         </el-table>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="工序标准作业票" name="fourth">
+                <el-tab-pane label="设备操作规范" name="fourth">
                     <div>
                         <el-table
                             :data="tabTableData"
@@ -403,23 +424,33 @@
                             :header-cell-style="tabTableHeaderColor"
                         >
                             <el-table-column type="index" label="No" width="40"></el-table-column>
-                            <el-table-column prop="content" label="认证内容"></el-table-column>
+                            <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
-                                <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
-                                <el-table-column
-                                    prop="planGather.gatherPlanTime"
-                                    sortable
-                                    label="计划送审时间"
-                                    width="136"
-                                ></el-table-column>
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
+                                <el-table-column prop="planGather.username" label="实际完成时间">
+                                    <template slot-scope="scope" width="100">
+                                        <div v-if="scope.row.planGather != null">
+                                            {{ scope.row.planGather.actualTime }}
+                                            <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -431,19 +462,21 @@
                                             <div
                                                 v-if="scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null"
                                             >
-                                                <el-button type="primary" plain size="mini" @click="verify(scope.row)">确认完成</el-button>
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
+                                                    >确认完成</el-button
+                                                >
                                             </div>
                                         </div>
                                     </template>
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -455,20 +488,13 @@
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
                                             <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 1)"
-                                                    >设定认证计划时间</el-button
-                                                ></el-col
-                                            >
-                                        </el-row>
-                                        <el-row v-if="scope.row.planGather.gatherActualTime == null">
-                                            <el-col :span="24">
-                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
-                                                    >修改收集计划时间</el-button
+                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                    >设定计划送审时间</el-button
                                                 ></el-col
                                             >
                                         </el-row>
                                     </div>
-                                    <div v-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                    <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
                                                 <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
@@ -503,7 +529,7 @@
                         </el-table>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="设备操作规范" name="fifth">
+                <el-tab-pane label="品管作业指导书" name="fifth">
                     <div>
                         <el-table
                             :data="tabTableData"
@@ -513,23 +539,33 @@
                             :header-cell-style="tabTableHeaderColor"
                         >
                             <el-table-column type="index" label="No" width="40"></el-table-column>
-                            <el-table-column prop="content" label="认证内容"></el-table-column>
+                            <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
-                                <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
-                                <el-table-column
-                                    prop="planGather.gatherPlanTime"
-                                    sortable
-                                    label="计划送审时间"
-                                    width="136"
-                                ></el-table-column>
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
+                                <el-table-column prop="planGather.username" label="实际完成时间">
+                                    <template slot-scope="scope" width="100">
+                                        <div v-if="scope.row.planGather != null">
+                                            {{ scope.row.planGather.actualTime }}
+                                            <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -541,19 +577,21 @@
                                             <div
                                                 v-if="scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null"
                                             >
-                                                <el-button type="primary" plain size="mini" @click="verify(scope.row)">确认完成</el-button>
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
+                                                    >确认完成</el-button
+                                                >
                                             </div>
                                         </div>
                                     </template>
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" sortable label="计划时间" width="136"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -565,20 +603,13 @@
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
                                             <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 1)"
-                                                    >设定认证计划时间</el-button
-                                                ></el-col
-                                            >
-                                        </el-row>
-                                        <el-row v-if="scope.row.planGather.gatherActualTime == null">
-                                            <el-col :span="24">
-                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
-                                                    >修改收集计划时间</el-button
+                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                    >设定计划送审时间</el-button
                                                 ></el-col
                                             >
                                         </el-row>
                                     </div>
-                                    <div v-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                    <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
                                                 <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
@@ -633,7 +664,7 @@
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -646,7 +677,7 @@
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
-                                                <el-tag type="warning" effect="dark">{{ item.username }}</el-tag>
+                                                {{ item.username }}
                                             </div>
                                         </div>
                                     </template>
@@ -659,7 +690,8 @@
             </el-tabs>
         </div>
         <div>
-            <el-dialog :title="title" :visible.sync="timeUpdateShow" width="30%" :show-close="false">
+            <!-- 修改时间 -->
+            <el-dialog :title="title" :visible.sync="timeUpdateShow" width="40%" :show-close="false">
                 <div>
                     <el-form ref="form" :model="formUpdate">
                         <el-form-item label="选择日期时间">
@@ -679,7 +711,8 @@
                     <el-button type="primary" @click="submitUpdateChose">提 交</el-button>
                 </span>
             </el-dialog>
-            <el-dialog :title="title" :visible.sync="timeChoseShow" width="30%" :show-close="false">
+            <!-- 设定稽核计划 -->
+            <el-dialog :title="title" :visible.sync="timeChoseShow" width="40%" :show-close="false">
                 <div>
                     <el-form ref="form" :model="formChoose">
                         <el-form-item label="选择稽核人员">
@@ -704,23 +737,49 @@
                     <el-button type="primary" @click="submitChose">提 交</el-button>
                 </span>
             </el-dialog>
-            <el-dialog title="填写资料" :visible.sync="planShow" width="30%">
+            <!-- 添加认证计划 -->
+            <el-dialog title="填写资料" :visible.sync="planGatherShow" width="40%">
                 <div>
-                    <el-form ref="form" :model="form" label-width="140px">
-                        <el-form-item label="认证内容">
-                            <el-input v-model="form.content"></el-input>
-                        </el-form-item>
-                        <el-form-item label="选择认证项目">
-                            <el-select v-model="form.dirId" filterable placeholder="请选择">
-                                <el-option v-for="item in directory" :key="item.id" :label="item.dirName" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
+                    <el-form ref="form" :model="gatherForm" label-width="100px">
                         <el-form-item label="选择审核人员">
-                            <el-select v-model="form.authUsers" multiple filterable placeholder="请选择">
+                            <el-select v-model="gatherForm.authUsers" multiple filterable placeholder="请选择">
                                 <el-option v-for="item in userList" :key="item.id" :label="item.username" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="计划资料送审时间">
+                            <el-date-picker
+                                v-model="gatherForm.gatherTime"
+                                type="datetime"
+                                placeholder="选择日期时间"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                :picker-options="expireTimeOption"
+                            >
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="gatherCancel">取 消</el-button>
+                    <el-button type="primary" @click="gatherSubmit">提 交</el-button>
+                </span>
+            </el-dialog>
+
+            <!-- 添加计划 -->
+            <el-dialog title="添加计划" :visible.sync="planShow" width="40%">
+                <div>
+                    <el-form ref="form" :model="form" label-width="140px">
+                        <el-form-item label="认证项目">
+                            <el-input v-model="form.content"></el-input>
+                        </el-form-item>
+                        <el-form-item label="四大标准">
+                            <el-select v-model="form.dirId" filterable placeholder="请选择">
+                                <el-option v-for="item in directory" :key="item.id" :label="item.dirName" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="被收集单位负责人">
+                            <el-input v-model="form.depPrincipal"></el-input>
+                        </el-form-item>
+                        <el-form-item label="计划完成时间">
                             <el-date-picker
                                 v-model="form.gatherTime"
                                 type="datetime"
@@ -757,6 +816,7 @@ export default {
             timeUpdateShow: false,
             timeChoseShow: false,
             planShow: false,
+            planGatherShow: false,
             formUpdate: {
                 time: '',
                 planId: '',
@@ -773,6 +833,12 @@ export default {
             form: {
                 content: '',
                 dirId: '',
+                gatherTime: '',
+                depPrincipal: ''
+            },
+            gatherForm: {
+                // content: '',
+                planId: '',
                 gatherTime: '',
                 authUsers: []
             },
@@ -817,8 +883,6 @@ export default {
                         value: item.id
                     });
                 });
-
-                console.log(that.filterData);
             })
             .catch((error) => {});
 
@@ -870,19 +934,42 @@ export default {
                 this.initDataDir(this.tabIndex);
             }
         },
-        // 确认完成的三个方法
+        // 确认完成的三个方法 index == 1 代表 收集资料 2 代表认证
         verify(row, index) {
             let that = this;
             console.log(row);
-            this.$axios
-                .get('api/plan/verify?planId=' + row.id + '&userId=' + this.userData.user.id)
-                .then((res) => {
-                    if (that.tabIndex != 0) {
-                        that.initDataDir(that.tabIndex);
+            console.log(this.userData);
+            if (this.userData.role[0].roles.roleCode != 'admin') {
+                let count = 0;
+                for (let i = 0; i < row.planAuth.users.length; i++) {
+                    if (row.planAuth.users[i].id == this.userData.user.id) {
+                        count++;
                     }
-                    that.initData();
-                })
-                .catch((res) => {});
+                }
+                if (count > 0) {
+                    this.$axios
+                        .get('api/plan/verify?planId=' + row.id + '&userId=' + this.userData.user.id + '&index=' + index)
+                        .then((res) => {
+                            if (that.tabIndex != 0) {
+                                that.initDataDir(that.tabIndex);
+                            }
+                            that.initData();
+                        })
+                        .catch((res) => {});
+                } else {
+                    this.$message('无法操作');
+                }
+            } else {
+                this.$axios
+                    .get('api/plan/verify?planId=' + row.id + '&userId=' + this.userData.user.id + '&index=' + index)
+                    .then((res) => {
+                        if (that.tabIndex != 0) {
+                            that.initDataDir(that.tabIndex);
+                        }
+                        that.initData();
+                    })
+                    .catch((res) => {});
+            }
         },
         // 稽核通过的方法
         pass(row, index) {
@@ -912,9 +999,7 @@ export default {
             this.formUpdate.planId = row.id;
             this.formUpdate.userId = this.userData.user.id;
             this.formUpdate.operaId = index;
-            if (index == 1) {
-                this.title = '修改计划收集资料时间';
-            } else if (index == 2) {
+            if (index == 2) {
                 this.title = '修改计划审核认证时间';
             } else if (index == 3) {
                 this.title = '修改计划稽核时间';
@@ -996,16 +1081,7 @@ export default {
             this.formChoose.userId = this.userData.user.id;
             this.formChoose.operaId = index;
 
-            if (index == 1) {
-                this.title = '设定计划审核认证时间';
-                if (row.planGather.gatherActualTime == null) {
-                    this.$message({
-                        message: '请确认完成收集资料',
-                        type: 'warning'
-                    });
-                    return true;
-                }
-            } else if (index == 2) {
+            if (index == 2) {
                 this.title = '设定计划稽核时间';
                 if (row.planAuth.authActualTime == null) {
                     this.$message({
@@ -1045,8 +1121,7 @@ export default {
                 });
                 return true;
             }
-            if (index == 1) {
-            } else if (index == 2) {
+            if (index == 2) {
                 console.log('添加稽核计划');
                 this.$axios
                     .post('api/plan/addPlanCheck', form)
@@ -1069,6 +1144,10 @@ export default {
         addPlan() {
             this.planShow = true;
         },
+        cancel() {
+            this.initForm();
+            this.planShow = false;
+        },
         submit() {
             let that = this;
             let form = {
@@ -1076,7 +1155,7 @@ export default {
                 content: this.form.content.trim(),
                 userId: this.userData.user.id,
                 time: this.form.gatherTime,
-                authUsers: this.form.authUsers
+                depPrincipal: this.form.depPrincipal.trim()
             };
 
             if (form.content == '' || form.content == null) {
@@ -1093,9 +1172,9 @@ export default {
                 });
                 return true;
             }
-            if (form.authUsers.length == 0) {
+            if (form.depPrincipal == null || form.depPrincipal == '') {
                 this.$message({
-                    message: '请选择审核人员',
+                    message: '请选择部门负责人',
                     type: 'warning'
                 });
                 return true;
@@ -1122,10 +1201,59 @@ export default {
                 })
                 .catch((err) => {});
         },
-        cancel() {
-            this.initForm();
-            this.planShow = false;
+        settingPlan(row) {
+            if (row.planGather.actualTime == null) {
+                this.$message({
+                    message: '请确认完成收集资料',
+                    type: 'warning'
+                });
+                return true;
+            }
+            this.planGatherShow = true;
+            this.gatherForm.planId = row.id;
         },
+        gatherSubmit() {
+            let that = this;
+            let form = {
+                userId: this.userData.user.id,
+                time: this.gatherForm.gatherTime,
+                authUsers: this.gatherForm.authUsers,
+                planId: this.gatherForm.planId
+            };
+
+            if (form.authUsers.length == 0) {
+                this.$message({
+                    message: '请选择审核人员',
+                    type: 'warning'
+                });
+                return true;
+            }
+            if (form.time == null || form.time == '') {
+                this.$message({
+                    message: '请选择计划送审时间',
+                    type: 'warning'
+                });
+                return true;
+            }
+            console.log(form);
+            this.$axios
+                .post('api/plan/addPlanAuth', form)
+                .then((res) => {
+                    this.$message({
+                        message: res.data,
+                        type: 'success'
+                    });
+                    that.planGatherShow = false;
+                    that.initData();
+                    that.initForm();
+                })
+                .catch((err) => {});
+        },
+        gatherCancel() {
+            this.initForm();
+            this.planGatherShow = false;
+        },
+
         // 初始化数据
         initData() {
             let that = this;
@@ -1169,7 +1297,7 @@ export default {
                 content: '',
                 dirId: '',
                 gatherTime: '',
-                authUsers: ''
+                depPrincipal: ''
             };
             this.formChoose = {
                 time: '',
@@ -1183,6 +1311,12 @@ export default {
                 userId: '',
                 operaId: ''
             };
+            this.gatherForm={
+                // content: '',
+                planId: '',
+                gatherTime: '',
+                authUsers: []
+            }
         },
         // 合并单元格
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -1222,31 +1356,30 @@ export default {
         // 设置单元格样式
         cellStyle({ row, columnIndex }) {
             if (columnIndex == 4) {
-                if (row.planGather != null && row.planAuth == null) {
-                    return 'background-color: #67C23A';
-                } else if (row.planGather != null && row.planAuth != null) {
-                    if (row.planGather.gatherPlanTime != null && row.planAuth.authPlanTime == null) {
-                        return 'background-color: #67C23A';
-                    }
-                }
-            }
-            if (columnIndex == 5) {
-                if (row.planAuth != null && row.planCheck == null) {
-                    if (this.calendarIsSame(row.planAuth.authPlanTime)) {
-                        return 'background-color: #F56C6C';
-                    }
-                    return 'background-color: #67C23A';
-                } else if (row.planAuth != null && row.planCheck != null) {
-                    if (row.planAuth.authPlanTime != null && row.planCheck.checkPlanTime == null) {
-                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                if (row.planGather != null) {
+                    if (row.planGather.planTime != null && row.planGather.actualTime == null) {
+                        if (this.calendarIsSame(row.planGather.planTime)) {
                             return 'background-color: #F56C6C';
                         }
+                        return 'background-color: #67C23A';
+                    } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
                         return 'background-color: #67C23A';
                     }
                 }
             }
             if (columnIndex == 8) {
-                //  console.log(row);
+                if (row.planAuth != null) {
+                    if (row.planAuth.authPlanTime != null && row.planAuth.authActualTime == null) {
+                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                            return 'background-color: #F56C6C';
+                        }
+                        return 'background-color: #67C23A';
+                    } else if (row.planAuth.authActualTime != null && row.planCheck == null) {
+                        return 'background-color: #67C23A';
+                    }
+                }
+            }
+            if (columnIndex == 11) {
                 if (row.planCheck != null && row.planCheck.checkPlanTime != null) {
                     if (this.calendarIsSame(row.planCheck.checkPlanTime)) {
                         return 'background-color: #F56C6C';
@@ -1258,28 +1391,30 @@ export default {
         // 其他tab中的数据操作
         cellStyleTab({ row, columnIndex }) {
             if (columnIndex == 3) {
-                if (row.planGather != null && row.planAuth == null) {
-                    return 'background-color: #67C23A';
-                } else if (row.planGather != null && row.planAuth != null) {
-                    if (row.planGather.gatherPlanTime != null && row.planAuth.authPlanTime == null) {
-                        return 'background-color: #67C23A';
-                    }
-                }
-            }
-            if (columnIndex == 4) {
-                if (row.planAuth != null && row.planCheck == null) {
-                    return 'background-color: #67C23A';
-                } else if (row.planAuth != null && row.planCheck != null) {
-                    if (row.planAuth.authPlanTime != null && row.planCheck.checkPlanTime == null) {
-                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                if (row.planGather != null) {
+                    if (row.planGather.planTime != null && row.planGather.actualTime == null) {
+                        if (this.calendarIsSame(row.planGather.planTime)) {
                             return 'background-color: #F56C6C';
                         }
+                        return 'background-color: #67C23A';
+                    } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
                         return 'background-color: #67C23A';
                     }
                 }
             }
             if (columnIndex == 7) {
-                //  console.log(row);
+                if (row.planAuth != null) {
+                    if (row.planAuth.authPlanTime != null && row.planAuth.authActualTime == null) {
+                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                            return 'background-color: #F56C6C';
+                        }
+                        return 'background-color: #67C23A';
+                    } else if (row.planAuth.authActualTime != null && row.planCheck == null) {
+                        return 'background-color: #67C23A';
+                    }
+                }
+            }
+            if (columnIndex == 10) {
                 if (row.planCheck != null && row.planCheck.checkPlanTime != null) {
                     if (this.calendarIsSame(row.planCheck.checkPlanTime)) {
                         return 'background-color: #F56C6C';
@@ -1297,21 +1432,21 @@ export default {
             } else if (rowIndex === 0 && columnIndex === 5) {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
-            if (rowIndex === 1 && columnIndex === 0) {
+            if (rowIndex === 1 && columnIndex === 3) {
                 return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
-            } else if (rowIndex === 1 && columnIndex === 1) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
-            } else if (rowIndex === 1 && columnIndex === 2) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
-            } else if (rowIndex === 1 && columnIndex === 3) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 4) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 5) {
-                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 6) {
-                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 7) {
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 8) {
+                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 9) {
+                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 10) {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
         },
@@ -1385,5 +1520,8 @@ export default {
 }
 .el-card__body {
     padding: 0px;
+}
+.el-table .cell {
+    color: black;
 }
 </style>

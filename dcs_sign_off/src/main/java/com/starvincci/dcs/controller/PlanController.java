@@ -53,45 +53,41 @@ public class PlanController {
         plan.setDirId(jsonObject.getInteger("dirId"));
         plan.setContent(jsonObject.getString("content"));
         plan.setUserId(jsonObject.getInteger("userId"));
+        plan.setDepPrincipal(jsonObject.getString("depPrincipal"));
         plan.setIsFinish(1);
 
         Plan samePlan = planService.getSamePlan(plan.getContent());
         if (samePlan != null) {
             return "添加失败,存在相同认证内容计划";
         }
-        Object[] userId = jsonObject.getJSONArray("authUsers").toArray();
-        StringBuffer sb = new StringBuffer();
-        for (Object item : userId) {
-            sb.append(item).append(",");
-        }
+
+
+        System.err.println(plan.toString());
 
         int res = planService.addPlan(plan);
-        if (res == 1) {
 
+        if (res == 1) {
+//
             PlanGather planGather = new PlanGather();
-            planGather.setGatherPlanTime(jsonObject.getString("time"));
             Plan resPlan = planService.getPlanTop();
+            planGather.setPlanTime(jsonObject.getString("time"));
             planGather.setPlanId(resPlan.getId());
             planGather.setUserId(jsonObject.getInteger("userId"));
-
+//
             System.err.println(planGather.toString());
-
+//
             int resGather = planService.addPlanGather(planGather);
-
-            PlanAuth planAuth = new PlanAuth();
-            planAuth.setAuthPlanTime(jsonObject.getString("time"));
-            planAuth.setPlanId(resPlan.getId());
-            planAuth.setUserId(sb.toString());
-
-            System.err.println(planAuth.toString());
-            int resAuth = planService.addPlanAuth(planAuth);
-            if (resGather == 1 && resAuth == 1) {
+            if (resGather == 1 ) {
                 return "添加成功";
             }
         }
         return "添加失败";
     }
 
+    /**
+     * 获取计划信息
+     * @return
+     */
     @GetMapping("/getPlan")
     public HashMap<String, Object> getPlan() {
 
@@ -140,51 +136,42 @@ public class PlanController {
 
 
     /**
-     * 暂时停用
      *
      * @param strs
      * @return
      */
     @PostMapping("/addPlanAuth")
     public String addPlanAuth(@RequestBody String strs) {
-
+        System.err.println(strs);
         JSONObject jsonObject = JSON.parseObject(strs);
+        Object[] userId = jsonObject.getJSONArray("authUsers").toArray();
+        StringBuffer sb = new StringBuffer();
+        for (Object item : userId) {
+            sb.append(item).append(",");
+        }
 
-        PlanAuth planAuth = new PlanAuth();
-        planAuth.setAuthPlanTime(jsonObject.getString("time"));
-        planAuth.setPlanId(jsonObject.getInteger("planId"));
-//        planAuth.setUserId(jsonObject.getInteger("userId"));
+        PlanGather planGather=new PlanGather();
+        planGather.setGatherPlanTime(jsonObject.getString("time"));
+        planGather.setPlanId(jsonObject.getInteger("planId"));
 
-        PlanAuth resPlanAuth = planService.getPlanAuthById(planAuth.getPlanId());
-
-        if (resPlanAuth != null) {
-            PlanAuth planAuthUpdate = new PlanAuth();
-            planAuthUpdate.setAuthPlanTime(planAuth.getAuthPlanTime());
-            planAuthUpdate.setPlanId(planAuth.getPlanId());
-
-//            planAuthUpdate.setUserId(jsonObject.getInteger("userId"));
-
-            int res = planService.updatePlanAuthWithUser(planAuthUpdate);
-            if (res == 1) {
-                return "认证计划添加成功";
+        int res=planService.updatePlanGather(planGather);
+        if (res==1){
+            PlanAuth planAuth=new PlanAuth();
+            planAuth.setPlanId(jsonObject.getInteger("planId"));
+            planAuth.setUserId(sb.toString());
+            planAuth.setAuthPlanTime(jsonObject.getString("time"));
+            int result=planService.addPlanAuth(planAuth);
+            if (result==1){
+                return "设定成功";
             }
         }
 
-
-        int res = planService.addPlanAuth(planAuth);
-        if (res == 1) {
-            return "认证计划添加成功";
-
-        }
-        System.err.println(planAuth.toString());
-
-
-        return "添加失败";
+        return "设定失败";
     }
 
 
     /**
-     * 添加稽核
+     * 添加稽核计划
      *
      * @param strs
      * @return
@@ -213,26 +200,10 @@ public class PlanController {
     }
 
     /**
-     * 停用
-     *
+     * 修改认证计划
      * @param strs
      * @return
      */
-    @PostMapping("/updatePlanGather")
-    public String updatePlanGather(@RequestBody String strs) {
-        JSONObject jsonObject = JSON.parseObject(strs);
-
-        PlanGather planGather = new PlanGather();
-        planGather.setPlanId(jsonObject.getInteger("planId"));
-        planGather.setGatherPlanTime(jsonObject.getString("time"));
-        int updateRes = planService.updatePlanGather(planGather);
-
-        if (updateRes == 1) {
-            return "修改成功";
-        }
-        return "修改失败";
-    }
-
     @PostMapping("/updatePlanAuth")
     public String updatePlanAuth(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -247,6 +218,11 @@ public class PlanController {
         return "修改失败";
     }
 
+    /**
+     * 修改稽核计划
+     * @param strs
+     * @return
+     */
     @PostMapping("/updatePlanCheck")
     public String updatePlanCheck(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -261,6 +237,11 @@ public class PlanController {
         return "修改失败";
     }
 
+    /**
+     * 稽核的判定
+     * @param strs
+     * @return
+     */
     @PostMapping("/passCheck")
     public String passCheck(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -284,17 +265,44 @@ public class PlanController {
         return "通过";
     }
 
+    /**
+     * 确认是否完成
+     *
+     * index ==1 代表修改计划收集资料实际完成时间
+     * index ==2 代表修改计划认证完成时间
+     *
+     * @param planId
+     * @param userId
+     * @return
+     */
     @GetMapping("/verify")
     public String verify(@RequestParam("planId") Integer planId,
-                         @RequestParam("userId") Integer userId) {
+                         @RequestParam("userId") Integer userId,
+                         @RequestParam("index")Integer index) {
+
 
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        PlanAuth planAuth = new PlanAuth();
-        planAuth.setAuthActualTime(sf.format(new Date()));
-        planAuth.setPlanId(planId);
-        planAuth.setAuthUserId(userId);
 
-        int res = planService.updatePlanAuth(planAuth);
+        int res =0;
+
+        if (index==1){
+
+            PlanGather planGather=new PlanGather();
+            planGather.setActualTime(sf.format(new Date()));
+            planGather.setPlanId(planId);
+
+            res=planService.updatePlanGather(planGather);
+
+        }else if(index==2){
+
+            PlanAuth planAuth = new PlanAuth();
+            planAuth.setAuthActualTime(sf.format(new Date()));
+            planAuth.setPlanId(planId);
+            planAuth.setAuthUserId(userId);
+
+            res = planService.updatePlanAuth(planAuth);
+        }
+
         if (res == 1) {
             return "确认成功";
         }
@@ -302,6 +310,11 @@ public class PlanController {
         return "确认失败";
     }
 
+    /**
+     * 根据认证项目查询的结果集
+     * @param dirId
+     * @return
+     */
     @GetMapping("/getPlanByDir")
     public HashMap<String, Object> getPlanByDir(@RequestParam("dirId") Integer dirId) {
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -347,6 +360,10 @@ public class PlanController {
         return hashMap;
     }
 
+    /**
+     * 查询已完成的计划
+     * @return
+     */
     @GetMapping("/getPlanFinish")
     public HashMap<String, Object> getPlanFinish() {
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -470,6 +487,11 @@ public class PlanController {
         return hashMap;
     }
 
+    /**
+     * 根据用户Id获取计划信息
+     * @param userId
+     * @return
+     */
     public List<Plan> getUserPlan(Integer userId) {
         List<Plan> resList = new ArrayList<>();
         List<Directory> directoryList = directoryService.getAllDir();

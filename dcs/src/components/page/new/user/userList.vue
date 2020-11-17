@@ -56,8 +56,10 @@
                 <el-form-item label="账号状态:">
                     <el-switch v-model="form.delivery" active-text="禁用"></el-switch>
                 </el-form-item>
-                <!-- <el-form-item label="wxUid">
-                    <el-input v-model="form.wxUid" class="inputclass"></el-input>
+                <!-- <el-form-item label="负责的认证项目">
+                    <el-select v-model="form.dirId">
+                        <el-option v-for="dir in directory" :key="dir.id" :label="dir.dirName" :value="dir.id"></el-option>
+                    </el-select>
                 </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -86,9 +88,10 @@ export default {
                 age: '',
                 delivery: false,
                 dep: '',
-                wxUid: ''
+                dirId: ''
             },
-            department: {},
+            department: [],
+            directory:[],
             roles: {},
             files: []
         };
@@ -150,7 +153,7 @@ export default {
             this.form.username = row.username;
             this.form.age = row.age;
             this.form.dep = row.departmentId;
-            this.form.wxUid = row.wxUid;
+            this.form.dirId = row.dirId;
             if (row.isStatus == 1) {
                 _this.form.delivery = true;
             } else {
@@ -205,7 +208,7 @@ export default {
                 age: '',
                 delivery: false,
                 dep: '',
-                wxUid: ''
+                dirId: ''
             };
             this.title = '';
             this.index = 0;
@@ -249,6 +252,13 @@ export default {
                 .catch((error) => {
                     this.$message.error(error.response.data.message);
                 });
+                this.$axios.get('api/plan/getDir',header)
+                .then(res=>{
+                    this.directory=res.data;
+                })
+                .catch(error=>{
+                    this.$message.error(error);
+                })
         }
     },
 

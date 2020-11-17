@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.starvincci.dcs.dao.plan.PlanMapper">
     <insert id="addPlan" parameterType="com.starvincci.dcs.pojo.plan.Plan">
-        INSERT INTO plan VALUES (null,#{content},#{dirId},#{userId},#{isFinish})
+        INSERT INTO plan VALUES (null,#{content},#{dirId},#{userId},#{depPrincipal},#{isFinish})
     </insert>
 
     <insert id="addPlanGather" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
-        INSERT INTO plan_gather VALUES (null,#{gatherPlanTime},#{userId},#{planId})
+        INSERT INTO plan_gather VALUES (null,#{gatherPlanTime},#{userId},#{planId},#{planTime},#{actualTime})
     </insert>
 
     <insert id="addPlanAuth" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
@@ -20,6 +20,9 @@
 
     <update id="updatePlanGather" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
         update plan_gather SET
+        <if test="actualTime!=null">
+            actualTime=#{actualTime}
+        </if>
         <if test="gatherPlanTime!=null">
             gatherPlanTime=#{gatherPlanTime}
         </if>
@@ -49,7 +52,7 @@
        update plan set isFinish=2 where id=#{id}
     </update>
     <update id="updatePlanAuthEmpty" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
- update plan_auth SET authPlanTime=NULL,userId=NULL,authActualTime=NULL,authUserId=NULL where planId=#{planId}
+        update plan_auth SET authPlanTime=NULL,userId=NULL,authActualTime=NULL,authUserId=NULL where planId=#{planId}
     </update>
     <update id="updatePlanCheckEmpty" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
  update plan_check SET checkPlanTime=NULL,userId=NULL,checkActualTime=NULL,checkUserId=NULL where planId=#{planId}

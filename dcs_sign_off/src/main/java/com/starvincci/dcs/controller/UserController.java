@@ -66,7 +66,7 @@ public class UserController {
         user.setPassword(jsonObject.getString("password"));
         user.setAge(0);
         user.setUsername(jsonObject.getString("username"));
-        user.setWxUid(jsonObject.getString("wxUid"));
+        user.setDirId(jsonObject.getInteger("dirId"));
         if (jsonObject.getString("delivery") == "true") {
             user.setIsStatus(1);
         } else {
@@ -91,8 +91,10 @@ public class UserController {
         users.setAccount(jsonObject.getString("account"));
         users.setUsername(jsonObject.getString("username"));
         users.setPassword(jsonObject.getString("password"));
+        users.setDirId(jsonObject.getInteger("dirId"));
         users.setAge(0);
         users.setDepartmentId(jsonObject.getInteger("dep"));
+        System.err.println(users.toString());
         Users resUser = userService.findByAccount(users);
         if (resUser != null) {
             return "添加失败，存在相同账号名";

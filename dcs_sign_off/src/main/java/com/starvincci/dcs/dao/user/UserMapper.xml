@@ -5,7 +5,7 @@
 <mapper namespace="com.starvincci.dcs.dao.user.UserMapper">
     
     <insert id="addUser" parameterType="com.starvincci.dcs.pojo.user.Users">
-        INSERT INTO users VALUES (null,#{account},#{password},#{departmentId},#{username},#{age},0,wx_uid=#{wxUid})
+        INSERT INTO users VALUES (null,#{account},#{password},#{departmentId},#{username},#{age},0,#{dirId})
     </insert>
 
     <update id="updateUserStatus">
@@ -13,7 +13,7 @@
     </update>
     
     <select id="getAllUsers" resultMap="users">
-       SELECT u.id,u.`account`,u.`password`,u.`username`,u.`age`,u.`isStatus`,u.`departmentId`,u.wx_uid,d.`departmentName`FROM users u
+       SELECT u.id,u.`account`,u.`password`,u.`username`,u.`age`,u.`isStatus`,u.`departmentId`,u.dirId,d.`departmentName`FROM users u
        INNER JOIN department d ON u.`departmentId`=d.`id`
 --        INNER JOIN user_role ur ON u.`id`=ur.`userId`
 --        INNER JOIN roles r ON r.`roleId`=ur.`roleId`
@@ -27,7 +27,7 @@
         <result property="username" column="username"></result>
         <result property="age" column="age"></result>
         <result property="isStatus" column="isStatus"></result>
-        <result property="wxUid" column="wx_uid"></result>
+        <result property="dirId" column="dirId"></result>
         <association property="department" javaType="com.starvincci.dcs.pojo.user.Department">
             <result property="departmentName" column="departmentName"></result>
         </association>
@@ -35,7 +35,7 @@
     </resultMap>
 
     <update id="updateUsers" parameterType="com.starvincci.dcs.pojo.user.Users">
-        UPDATE users SET account=#{account},password=#{password},username=#{username},departmentId=#{departmentId},age=#{age},isStatus=#{isStatus},wx_uid=#{wxUid} WHERE id=#{id}
+        UPDATE users SET account=#{account},password=#{password},username=#{username},departmentId=#{departmentId},age=#{age},isStatus=#{isStatus},dirId=#{dirId} WHERE id=#{id}
     </update>
 
     <select id="findByAccount" resultMap="users" parameterType="com.starvincci.dcs.pojo.user.Users">

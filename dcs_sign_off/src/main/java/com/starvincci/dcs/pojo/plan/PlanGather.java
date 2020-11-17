@@ -4,9 +4,12 @@ import com.starvincci.dcs.pojo.user.Users;
 
 public class PlanGather {
     private Integer id;//主键id
-    private String  gatherPlanTime;//计划收集时间
+    private String  gatherPlanTime;//计划送审时间
     private Integer userId;//计划收集人员
     private Integer planId;//计划认证内容id
+    private String planTime;//计划收集完成时间
+    private String actualTime;//收集实际完成时间
+
     private Users users;//计划收集资料用户对象
     private Users gatherUser;//完成用户对象
     private Plan plan;
@@ -42,9 +45,28 @@ public class PlanGather {
                 ", gatherPlanTime='" + gatherPlanTime + '\'' +
                 ", userId=" + userId +
                 ", planId=" + planId +
+                ", planTime='" + planTime + '\'' +
+                ", actualTime='" + actualTime + '\'' +
                 ", users=" + users +
+                ", gatherUser=" + gatherUser +
                 ", plan=" + plan +
                 '}';
+    }
+
+    public String getPlanTime() {
+        return planTime;
+    }
+
+    public void setPlanTime(String planTime) {
+        this.planTime = planTime;
+    }
+
+    public String getActualTime() {
+        return actualTime;
+    }
+
+    public void setActualTime(String actualTime) {
+        this.actualTime = actualTime;
     }
 
     public Integer getId() {

@@ -12,6 +12,8 @@ public class Plan {
     private Integer dirId;
     //添加人
     private Integer userId;
+    //被收集单位负责人
+    private String depPrincipal;
     private Integer isFinish;
     private PlanAuth planAuth;
     private PlanCheck planCheck;
@@ -66,6 +68,7 @@ public class Plan {
                 ", content='" + content + '\'' +
                 ", dirId=" + dirId +
                 ", userId=" + userId +
+                ", depPrincipal='" + depPrincipal + '\'' +
                 ", isFinish=" + isFinish +
                 ", planAuth=" + planAuth +
                 ", planCheck=" + planCheck +
@@ -73,6 +76,14 @@ public class Plan {
                 ", users=" + users +
                 ", directory=" + directory +
                 '}';
+    }
+
+    public String getDepPrincipal() {
+        return depPrincipal;
+    }
+
+    public void setDepPrincipal(String depPrincipal) {
+        this.depPrincipal = depPrincipal;
     }
 
     public Integer getId() {

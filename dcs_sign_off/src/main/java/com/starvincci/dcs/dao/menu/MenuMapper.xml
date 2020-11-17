@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.starvincci.dcs.dao.menu.MenuMapper">
+    <insert id="addUserMenu">
+        insert into user_menu VALUES (null,#{mid},#{uid});
+    </insert>
+
+
+    <select id="getMenuById" resultType="com.starvincci.dcs.pojo.menu.Menu">
+    SELECT * FROM menu WHERE id=#{id}
+    </select>
+
+    <select id="getUserMenuByUid" resultType="com.starvincci.dcs.pojo.menu.UserMenu">
+    SELECT * FROM user_menu WHERE uid=#{userId}
+    </select>
+
+</mapper>
