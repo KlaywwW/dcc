@@ -3,9 +3,12 @@ module.exports = {
 	assetsDir: 'static',
 	productionSourceMap: false,
 	// devServer: {
-	// 	port: 3000// 端口
-	// }
+        
+	// },
+    // disableHostCheck: true,
 	devServer: {
+        port: 8083,// 端口
+        disableHostCheck: true,
 	    proxy: {
 	        '/api':{
 				target:'http://192.168.123.86:8099',
@@ -14,6 +17,6 @@ module.exports = {
 	                '^/api':''
 	            }
 	        }
-	    }
+        },
 	}
 }

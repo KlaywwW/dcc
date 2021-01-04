@@ -20,8 +20,9 @@
 
     <update id="updatePlanGather" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
         update plan_gather SET
+
         <if test="actualTime!=null">
-            actualTime=#{actualTime}
+           actualTime=#{actualTime}
         </if>
         <if test="gatherPlanTime!=null">
             gatherPlanTime=#{gatherPlanTime}
@@ -30,21 +31,23 @@
     </update>
     <update id="updatePlanAuth" parameterType="com.starvincci.dcs.pojo.plan.PlanAuth">
         update plan_auth SET
+
         <if test="authActualTime!=null">
             authActualTime=#{authActualTime},authUserId=#{authUserId},authPlanTime=authPlanTime
         </if>
         <if test="authPlanTime!=null">
-            authActualTime=authActualTime,authPlanTime=#{authPlanTime}
+            userId=#{userId},authPlanTime=#{authPlanTime},authActualTime=authActualTime
         </if>
         where planId=#{planId}
     </update>
     <update id="updatePlanCheck" parameterType="com.starvincci.dcs.pojo.plan.PlanGather">
         update plan_check SET
+
         <if test="checkActualTime!=null">
             checkActualTime=#{checkActualTime},checkUserId=#{checkUserId},checkPlanTime=checkPlanTime
         </if>
         <if test="checkPlanTime!=null">
-            checkPlanTime=#{checkPlanTime},checkActualTime=checkActualTime
+            userId=#{userId},checkPlanTime=#{checkPlanTime},checkActualTime=checkActualTime
         </if>
         where planId=#{planId}
     </update>

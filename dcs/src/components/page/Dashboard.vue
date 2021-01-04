@@ -16,13 +16,16 @@
                             <span>今日待办事项</span>《{{ todoTodayCount }}》
                             <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                         </div>
-                        <el-table :data="todoTodayList" style="width: 100%">
+                        <el-table :data="todoTodayList" style="width: 100%" height="250">
                             <el-table-column width="40" type="index" label="No"></el-table-column>
                             <el-table-column prop="directory.dirName" label="认证项目"></el-table-column>
                             <el-table-column prop="content" label="认证内容"></el-table-column>
                             <el-table-column label="待处理事项">
                                 <template slot-scope="scope">
-                                    <div v-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
+                                    <div v-if="scope.row.planGather.planTime != null && scope.row.planGather.actualTime == null">
+                                        收集资料中
+                                    </div>
+                                    <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
                                         待认证
                                     </div>
                                     <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime != null">
@@ -32,7 +35,10 @@
                             </el-table-column>
                             <el-table-column label="计划时间">
                                 <template slot-scope="scope">
-                                    <div v-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
+                                    <div v-if="scope.row.planGather.planTime != null && scope.row.planGather.actualTime == null">
+                                        {{ scope.row.planGather.planTime }}
+                                    </div>
+                                    <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
                                         {{ scope.row.planAuth.authPlanTime }}
                                     </div>
                                     <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime != null">
@@ -50,13 +56,25 @@
                         <span>所有待办事项</span>《{{ todoCount }}》
                         <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                     </div>
-                    <el-table :data="todoList" style="width: 100%" height="514">
+                    <el-table :data="todoList" style="width: 100%" height="400">
                         <el-table-column width="40" type="index" label="No"></el-table-column>
                         <el-table-column prop="directory.dirName" label="认证项目"></el-table-column>
                         <el-table-column prop="content" label="认证内容"></el-table-column>
                         <el-table-column label="待处理事项">
                             <template slot-scope="scope">
-                                <div v-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
+                                <div v-if="scope.row.planGather.planTime != null && scope.row.planGather.actualTime == null">
+                                    收集资料中
+                                </div>
+                                <div
+                                    v-else-if="
+                                        scope.row.planGather.planTime != null &&
+                                        scope.row.planGather.actualTime != null &&
+                                        scope.row.planGather.gatherPlanTime == null
+                                    "
+                                >
+                                    待计划送审
+                                </div>
+                                <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
                                     待认证
                                 </div>
                                 <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime != null">
@@ -66,7 +84,19 @@
                         </el-table-column>
                         <el-table-column label="计划时间">
                             <template slot-scope="scope">
-                                <div v-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
+                                <div v-if="scope.row.planGather.planTime != null && scope.row.planGather.actualTime == null">
+                                    {{ scope.row.planGather.planTime }}
+                                </div>
+                                <div
+                                    v-else-if="
+                                        scope.row.planGather.planTime != null &&
+                                        scope.row.planGather.actualTime != null &&
+                                        scope.row.planGather.gatherPlanTime == null
+                                    "
+                                >
+                                    未计划
+                                </div>
+                                <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime == null">
                                     {{ scope.row.planAuth.authPlanTime }}
                                 </div>
                                 <div v-else-if="scope.row.planAuth.authPlanTime != null && scope.row.planAuth.authActualTime != null">
@@ -233,6 +263,9 @@ export default {
         const h = this.$createElement;
         this.userData = JSON.parse(sessionStorage.getItem('userData'));
         this.$axios.get('api/plan/getPlanByUser?userId=' + this.userData.user.id).then((res) => {
+            if (res.data.code == 777) {
+                this.$router.push('/login');
+            }
             that.todoList = res.data.data;
             that.todoCount = res.data.count;
             console.log(res.data);

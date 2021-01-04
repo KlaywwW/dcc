@@ -77,10 +77,10 @@ export default {
                 })
                 .catch((res) => {});
         },
-        noApprove(row,index) {
+        noApprove(row, index) {
             row['status'] = 3;
 
-             this.$axios
+            this.$axios
                 .post('api/record/updateRecord', row)
                 .then((res) => {
                     this.$message.success(res.data);

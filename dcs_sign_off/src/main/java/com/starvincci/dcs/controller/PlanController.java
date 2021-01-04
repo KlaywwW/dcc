@@ -77,7 +77,7 @@ public class PlanController {
             System.err.println(planGather.toString());
 //
             int resGather = planService.addPlanGather(planGather);
-            if (resGather == 1 ) {
+            if (resGather == 1) {
                 return "添加成功";
             }
         }
@@ -86,6 +86,7 @@ public class PlanController {
 
     /**
      * 获取计划信息
+     *
      * @return
      */
     @GetMapping("/getPlan")
@@ -150,18 +151,18 @@ public class PlanController {
             sb.append(item).append(",");
         }
 
-        PlanGather planGather=new PlanGather();
+        PlanGather planGather = new PlanGather();
         planGather.setGatherPlanTime(jsonObject.getString("time"));
         planGather.setPlanId(jsonObject.getInteger("planId"));
 
-        int res=planService.updatePlanGather(planGather);
-        if (res==1){
-            PlanAuth planAuth=new PlanAuth();
+        int res = planService.updatePlanGather(planGather);
+        if (res == 1) {
+            PlanAuth planAuth = new PlanAuth();
             planAuth.setPlanId(jsonObject.getInteger("planId"));
             planAuth.setUserId(sb.toString());
             planAuth.setAuthPlanTime(jsonObject.getString("time"));
-            int result=planService.addPlanAuth(planAuth);
-            if (result==1){
+            int result = planService.addPlanAuth(planAuth);
+            if (result == 1) {
                 return "设定成功";
             }
         }
@@ -201,6 +202,7 @@ public class PlanController {
 
     /**
      * 修改认证计划
+     *
      * @param strs
      * @return
      */
@@ -211,6 +213,12 @@ public class PlanController {
         PlanAuth planAuth = new PlanAuth();
         planAuth.setPlanId(jsonObject.getInteger("planId"));
         planAuth.setAuthPlanTime(jsonObject.getString("time"));
+        Object[] userId = jsonObject.getJSONArray("checkUsers").toArray();
+        StringBuffer sb = new StringBuffer();
+        for (Object item : userId) {
+            sb.append(item).append(",");
+        }
+        planAuth.setUserId(sb.toString());
         int updateRes = planService.updatePlanAuth(planAuth);
         if (updateRes == 1) {
             return "修改成功";
@@ -220,6 +228,7 @@ public class PlanController {
 
     /**
      * 修改稽核计划
+     *
      * @param strs
      * @return
      */
@@ -230,6 +239,13 @@ public class PlanController {
         PlanCheck planCheck = new PlanCheck();
         planCheck.setPlanId(jsonObject.getInteger("planId"));
         planCheck.setCheckPlanTime(jsonObject.getString("time"));
+        Object[] userId = jsonObject.getJSONArray("checkUsers").toArray();
+        StringBuffer sb = new StringBuffer();
+        for (Object item : userId) {
+            sb.append(item).append(",");
+        }
+        planCheck.setUserId(sb.toString());
+
         int updateRes = planService.updatePlanCheck(planCheck);
         if (updateRes == 1) {
             return "修改成功";
@@ -239,6 +255,7 @@ public class PlanController {
 
     /**
      * 稽核的判定
+     *
      * @param strs
      * @return
      */
@@ -267,7 +284,7 @@ public class PlanController {
 
     /**
      * 确认是否完成
-     *
+     * <p>
      * index ==1 代表修改计划收集资料实际完成时间
      * index ==2 代表修改计划认证完成时间
      *
@@ -278,22 +295,22 @@ public class PlanController {
     @GetMapping("/verify")
     public String verify(@RequestParam("planId") Integer planId,
                          @RequestParam("userId") Integer userId,
-                         @RequestParam("index")Integer index) {
+                         @RequestParam("index") Integer index) {
 
 
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        int res =0;
+        int res = 0;
 
-        if (index==1){
+        if (index == 1) {
 
-            PlanGather planGather=new PlanGather();
+            PlanGather planGather = new PlanGather();
             planGather.setActualTime(sf.format(new Date()));
             planGather.setPlanId(planId);
 
-            res=planService.updatePlanGather(planGather);
+            res = planService.updatePlanGather(planGather);
 
-        }else if(index==2){
+        } else if (index == 2) {
 
             PlanAuth planAuth = new PlanAuth();
             planAuth.setAuthActualTime(sf.format(new Date()));
@@ -312,6 +329,7 @@ public class PlanController {
 
     /**
      * 根据认证项目查询的结果集
+     *
      * @param dirId
      * @return
      */
@@ -362,6 +380,7 @@ public class PlanController {
 
     /**
      * 查询已完成的计划
+     *
      * @return
      */
     @GetMapping("/getPlanFinish")
@@ -461,8 +480,18 @@ public class PlanController {
         for (Plan plan : planList) {
             PlanAuth planAuth = plan.getPlanAuth();
             PlanCheck planCheck = plan.getPlanCheck();
+            PlanGather planGather = plan.getPlanGather();
+            int gatherCount = 0;
             int authCount = 0;
             int checkCount = 0;
+            if (planGather != null && planAuth == null) {
+                if (planGather.getPlanTime() != null && (planGather.getActualTime() == null || "".equals(planGather.getActualTime()))) {
+                    if (new CalendarUtil().isSame(planGather.getPlanTime())) {
+                        gatherCount++;
+                    }
+                }
+            }
+
             if (planAuth != null && planCheck == null) {
                 if (planAuth.getAuthPlanTime() != null && (planAuth.getAuthActualTime() == null || "".equals(planAuth.getAuthActualTime()))) {
                     if (new CalendarUtil().isSame(planAuth.getAuthPlanTime())) {
@@ -476,7 +505,7 @@ public class PlanController {
                     }
                 }
             }
-            if (authCount > 0 || checkCount > 0) {
+            if (gatherCount > 0 || authCount > 0 || checkCount > 0) {
                 plans.add(plan);
             }
 
@@ -489,6 +518,7 @@ public class PlanController {
 
     /**
      * 根据用户Id获取计划信息
+     *
      * @param userId
      * @return
      */
@@ -504,9 +534,31 @@ public class PlanController {
 
                 PlanAuth planAuth = planService.getPlanAuthById(plan.getId());
                 PlanCheck planCheck = planService.getPlanCheckById(plan.getId());
+                PlanGather planGather = planService.getPlanGatherById(plan.getId());
+                int gatherCount = 0;
                 int authCount = 0;
                 int checkCount = 0;
-                if (planAuth != null && planCheck == null) {
+                if (planGather != null && planAuth == null) {
+
+                    if (planGather.getPlanTime() != null && (planGather.getActualTime() == null || "".equals(planGather.getActualTime()))) {
+                        if (planGather.getUserId().equals(userId)) {
+                            gatherCount++;
+                        }
+                        if (gatherCount > 0) {
+                            plan.setPlanGather(planGather);
+                        }
+
+                    }else if (planGather.getPlanTime() != null && planGather.getActualTime() != null && planGather.getGatherPlanTime() == null) {
+                        if (planGather.getUserId().equals(userId)) {
+                            gatherCount++;
+                        }
+                        if (gatherCount > 0) {
+                            plan.setPlanGather(planGather);
+                        }
+                    }
+
+
+                } else if (planAuth != null && planCheck == null) {
                     if (planAuth.getAuthPlanTime() != null && (planAuth.getAuthActualTime() == null || "".equals(planAuth.getAuthActualTime()))) {
                         String[] userIds = planAuth.getUserId().split(",");
                         List<Users> authUsers = new ArrayList<>();
@@ -548,7 +600,7 @@ public class PlanController {
                 }
 
 
-                if (authCount > 0 || checkCount > 0) {
+                if (gatherCount > 0 || authCount > 0 || checkCount > 0) {
                     resList.add(plan);
                 }
             }

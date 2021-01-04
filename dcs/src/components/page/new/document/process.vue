@@ -1,4 +1,4 @@
-<template>
+l<template>
     <div>
         <div class="container">
             <div style="margin-bottom: 10px">
@@ -7,15 +7,15 @@
                         <el-card shadow="hover">
                             <div>
                                 <div class="num">{{ numFirst }}</div>
-                                <div class="title">总数</div>
+                                <div class="title">进行中</div>
                             </div>
                         </el-card>
                     </el-col>
-                   
+
                     <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{  numSecond}}</div>
+                                <div class="num">{{ numSecond }}</div>
                                 <div class="title">流程作业指导书</div>
                             </div>
                         </el-card>
@@ -31,15 +31,15 @@
                     <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{ numFourth}}</div>
+                                <div class="num">{{ numFourth }}</div>
                                 <div class="title">设备操作规范</div>
                             </div>
                         </el-card>
                     </el-col>
-                     <el-col :span="4">
+                    <el-col :span="4">
                         <el-card shadow="hover">
                             <div>
-                                <div class="num">{{  numFifth  }}</div>
+                                <div class="num">{{ numFifth }}</div>
                                 <div class="title">品管作业指导书</div>
                             </div>
                         </el-card>
@@ -70,14 +70,14 @@
                                 :cell-style="cellStyle"
                                 :header-cell-style="tableHeaderColor"
                             >
-                                <el-table-column prop="dirName" label="四大标准" width="120"></el-table-column>
+                                <el-table-column prop="dirName" label="四大标准" width="120" fixed></el-table-column>
                                 <el-table-column type="index" label="No" width="40"></el-table-column>
-                                <el-table-column prop="content" label="认证项目"></el-table-column>
+                                <el-table-column prop="content" label="认证项目" fixed></el-table-column>
                                 <el-table-column label="收集资料">
                                     <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
                                     <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
-                                    <el-table-column prop="planGather.username" label="实际完成时间">
-                                        <template slot-scope="scope" width="100">
+                                    <el-table-column label="实际完成时间" width="100">
+                                        <template slot-scope="scope">
                                             <div v-if="scope.row.planGather != null">
                                                 {{ scope.row.planGather.actualTime }}
                                                 <div
@@ -197,9 +197,9 @@
                             <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
                                 <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
-                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
-                                <el-table-column prop="planGather.username" label="实际完成时间">
-                                    <template slot-scope="scope" width="100">
+                                <el-table-column prop="planGather.planTime" sortable label="计划完成时间"></el-table-column>
+                                <el-table-column width="100" label="实际完成时间">
+                                    <template slot-scope="scope">
                                         <div v-if="scope.row.planGather != null">
                                             {{ scope.row.planGather.actualTime }}
                                             <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
@@ -212,10 +212,10 @@
                                 </el-table-column>
 
                                 <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
-                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间" sortable></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
@@ -241,7 +241,7 @@
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
@@ -312,9 +312,9 @@
                             <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
                                 <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
-                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
-                                <el-table-column prop="planGather.username" label="实际完成时间">
-                                    <template slot-scope="scope" width="100">
+                                <el-table-column prop="planGather.planTime" label="计划完成时间" sortable></el-table-column>
+                                <el-table-column width="100" label="实际完成时间">
+                                    <template slot-scope="scope">
                                         <div v-if="scope.row.planGather != null">
                                             {{ scope.row.planGather.actualTime }}
                                             <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
@@ -327,10 +327,10 @@
                                 </el-table-column>
 
                                 <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
-                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间" sortable></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
@@ -356,7 +356,7 @@
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
@@ -427,9 +427,9 @@
                             <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
                                 <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
-                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
-                                <el-table-column prop="planGather.username" label="实际完成时间">
-                                    <template slot-scope="scope" width="100">
+                                <el-table-column prop="planGather.planTime" label="计划完成时间" sortable></el-table-column>
+                                <el-table-column width="100" label="实际完成时间">
+                                    <template slot-scope="scope">
                                         <div v-if="scope.row.planGather != null">
                                             {{ scope.row.planGather.actualTime }}
                                             <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
@@ -442,10 +442,10 @@
                                 </el-table-column>
 
                                 <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
-                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间" sortable></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
@@ -471,7 +471,7 @@
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
@@ -542,9 +542,9 @@
                             <el-table-column prop="content" label="认证项目"></el-table-column>
                             <el-table-column label="收集资料">
                                 <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
-                                <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
-                                <el-table-column prop="planGather.username" label="实际完成时间">
-                                    <template slot-scope="scope" width="100">
+                                <el-table-column prop="planGather.planTime" label="计划完成时间" sortable></el-table-column>
+                                <el-table-column width="100" label="实际完成时间">
+                                    <template slot-scope="scope">
                                         <div v-if="scope.row.planGather != null">
                                             {{ scope.row.planGather.actualTime }}
                                             <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
@@ -557,10 +557,10 @@
                                 </el-table-column>
 
                                 <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
-                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间" sortable></el-table-column>
                             </el-table-column>
                             <el-table-column label="审核认证">
-                                <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="认证人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
@@ -586,7 +586,7 @@
                                 </el-table-column>
                             </el-table-column>
                             <el-table-column label="稽核">
-                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
                                 <el-table-column label="稽核人员">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
@@ -650,7 +650,15 @@
                             <el-table-column type="index" label="No" width="40"></el-table-column>
                             <el-table-column prop="content" label="认证内容"></el-table-column>
                             <el-table-column label="收集资料">
-                                <el-table-column prop="users.username" label="收集资料人员"></el-table-column>
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" sortable label="计划完成时间"></el-table-column>
+                                <el-table-column prop="planGather.actualTime" sortable label="实际完成时间"> </el-table-column>
+                                <el-table-column
+                                    prop="users.username"
+                                    label="收集资料组长"
+                                    :filters="filterData"
+                                    :filter-method="filterPlanGather"
+                                ></el-table-column>
                                 <el-table-column
                                     prop="planGather.gatherPlanTime"
                                     sortable
@@ -703,6 +711,11 @@
                                 :picker-options="expireTimeOption"
                             >
                             </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="人员">
+                            <el-select v-model="formUpdate.checkUsers" multiple filterable placeholder="请选择">
+                                <el-option v-for="item in userList" :key="item.id" :label="item.username" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -821,7 +834,8 @@ export default {
                 time: '',
                 planId: '',
                 userId: '',
-                operaId: ''
+                operaId: '',
+                checkUsers: []
             },
             formChoose: {
                 time: '',
@@ -884,7 +898,9 @@ export default {
                     });
                 });
             })
-            .catch((error) => {});
+            .catch((error) => {
+                console.log(error);
+            });
 
         this.$axios.get('api/plan/getPlanFinish').then((res) => {
             that.finishTableData = res.data.data;
@@ -892,6 +908,13 @@ export default {
         });
     },
     methods: {
+        filterPlanGather(value, row) {
+            if (row.planGather != null) {
+                if (row.planGather.userId == value) {
+                    return true;
+                }
+            }
+        },
         // 认证人过滤
         filterPlanAuth(value, row) {
             if (row.planAuth != null) {
@@ -937,72 +960,181 @@ export default {
         // 确认完成的三个方法 index == 1 代表 收集资料 2 代表认证
         verify(row, index) {
             let that = this;
-            console.log(row);
-            console.log(this.userData);
-            if (this.userData.role[0].roles.roleCode != 'admin') {
-                let count = 0;
-                for (let i = 0; i < row.planAuth.users.length; i++) {
-                    if (row.planAuth.users[i].id == this.userData.user.id) {
-                        count++;
-                    }
-                }
-                if (count > 0) {
-                    this.$axios
-                        .get('api/plan/verify?planId=' + row.id + '&userId=' + this.userData.user.id + '&index=' + index)
-                        .then((res) => {
-                            if (that.tabIndex != 0) {
-                                that.initDataDir(that.tabIndex);
+            this.$confirm('是否确认完成?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+                .then(() => {
+                    if (that.userData.role[0].roles.roleCode != 'admin') {
+                        let count = 0;
+                        if (index == 1) {
+                            if (row.planGather.userId == that.userData.user.id) {
+                                count = 1;
                             }
-                            that.initData();
-                        })
-                        .catch((res) => {});
-                } else {
-                    this.$message('无法操作');
-                }
-            } else {
-                this.$axios
-                    .get('api/plan/verify?planId=' + row.id + '&userId=' + this.userData.user.id + '&index=' + index)
-                    .then((res) => {
-                        if (that.tabIndex != 0) {
-                            that.initDataDir(that.tabIndex);
+                        } else if (index == 2) {
+                            for (let i = 0; i < row.planAuth.users.length; i++) {
+                                if (row.planAuth.users[i].id == that.userData.user.id) {
+                                    count++;
+                                }
+                            }
                         }
-                        that.initData();
-                    })
-                    .catch((res) => {});
-            }
+
+                        if (count > 0) {
+                            that.$axios
+                                .get('api/plan/verify?planId=' + row.id + '&userId=' + that.userData.user.id + '&index=' + index)
+                                .then((res) => {
+                                    if (that.tabIndex != 0) {
+                                        that.initDataDir(that.tabIndex);
+                                        return true;
+                                    }
+                                    that.initData();
+                                })
+                                .catch((res) => {});
+                        } else {
+                            that.$message('无法操作');
+                        }
+                    } else {
+                        that.$axios
+                            .get('api/plan/verify?planId=' + row.id + '&userId=' + that.userData.user.id + '&index=' + index)
+                            .then((res) => {
+                                if (that.tabIndex != 0) {
+                                    that.initDataDir(that.tabIndex);
+                                    return true;
+                                }
+                                that.initData();
+                            })
+                            .catch((res) => {});
+                    }
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+
+            // console.log(row);
+            // console.log(this.userData);
         },
         // 稽核通过的方法
         pass(row, index) {
+            let count = 0;
             let that = this;
             let form = {
                 planId: row.id,
                 userId: this.userData.user.id,
                 index: index
             };
-            this.$axios
-                .post('api/plan/passCheck', form)
-                .then((res) => {
-                    this.$message({
-                        message: res.data,
-                        type: 'success'
-                    });
-                    if (that.tabIndex != 0) {
-                        that.initDataDir(that.tabIndex);
+            if (this.userData.role[0].roles.roleCode != 'admin') {
+                for (let i = 0; i < row.planCheck.users.length; i++) {
+                    if (row.planCheck.users[i].id == this.userData.user.id) {
+                        count++;
                     }
-                    that.initData();
-                })
-                .catch((error) => {});
+                }
+                if (count > 0) {
+                    this.$axios
+                        .post('api/plan/passCheck', form)
+                        .then((res) => {
+                            this.$message({
+                                message: res.data,
+                                type: 'success'
+                            });
+                            if (that.tabIndex != 0) {
+                                that.initDataDir(that.tabIndex);
+                                return true;
+                            }
+                            that.initData();
+                        })
+                        .catch((error) => {});
+                } else {
+                    this.$message({
+                        message: '无法操作'
+                    });
+                    return true;
+                }
+            } else {
+                this.$axios
+                    .post('api/plan/passCheck', form)
+                    .then((res) => {
+                        this.$message({
+                            message: res.data,
+                            type: 'success'
+                        });
+                        if (that.tabIndex != 0) {
+                            that.initDataDir(that.tabIndex);
+                            return true;
+                        }
+                        that.initData();
+                    })
+                    .catch((error) => {});
+            }
         },
         // 修改计划时间弹框的所需三个方法
         updatePlan(row, index) {
-            this.timeUpdateShow = true;
+            let that = this;
+            let count = 0;
             this.formUpdate.planId = row.id;
             this.formUpdate.userId = this.userData.user.id;
             this.formUpdate.operaId = index;
+            let planAuthUsers = [];
+            let planCheckUsers = [];
+            if (row.planAuth != null) {
+                for (const key in row.planAuth.users) {
+                    planAuthUsers.push(row.planAuth.users[key].id);
+                }
+            }
+            if (row.planCheck != null) {
+                for (const key in row.planCheck.users) {
+                    planCheckUsers.push(row.planCheck.users[key].id);
+                }
+            }
+
             if (index == 2) {
-                this.title = '修改计划审核认证时间';
+                if (this.userData.role[0].roles.roleCode != 'admin') {
+                    for (let i = 0; i < row.planAuth.users.length; i++) {
+                        if (row.planAuth.users[i].id == this.userData.user.id) {
+                            count++;
+                        }
+                    }
+                    if (count > 0) {
+                        that.formUpdate.checkUsers = planAuthUsers;
+                        this.title = '修改计划审核认证时间';
+                        this.timeUpdateShow = true;
+                    } else {
+                        this.$message({
+                            message: '无法操作'
+                        });
+                        return true;
+                    }
+                } else {
+                    that.formUpdate.checkUsers = planAuthUsers;
+                    this.title = '修改计划审核认证时间';
+                    this.timeUpdateShow = true;
+                }
             } else if (index == 3) {
-                this.title = '修改计划稽核时间';
+                if (this.userData.role[0].roles.roleCode != 'admin') {
+                    for (let i = 0; i < row.planCheck.users.length; i++) {
+                        if (row.planCheck.users[i].id == this.userData.user.id) {
+                            count++;
+                        }
+                    }
+                    if (count > 0) {
+                        that.formUpdate.checkUsers = planCheckUsers;
+                        this.title = '修改计划稽核时间';
+                        this.timeUpdateShow = true;
+                    } else {
+                        this.$message({
+                            message: '无法操作'
+                        });
+                        return true;
+                    }
+                } else {
+                    console.log(row);
+                    that.formUpdate.checkUsers = planCheckUsers;
+                    this.title = '修改计划稽核时间';
+                    this.timeUpdateShow = true;
+                }
             }
         },
         submitUpdateChose() {
@@ -1011,11 +1143,21 @@ export default {
             let form = {
                 time: this.formUpdate.time,
                 planId: this.formUpdate.planId,
-                userId: this.formUpdate.userId
+                userId: this.formUpdate.userId,
+                checkUsers: this.formUpdate.checkUsers
             };
             if (form.time == null || form.time == '') {
                 this.$message({
                     message: '请选择计划时间',
+                    type: 'warning'
+                });
+                return true;
+            }
+            console.log(this.formUpdate.checkUsers);
+            console.log(form);
+            if (form.checkUsers.length <= 0) {
+                this.$message({
+                    message: '请选择人员',
                     type: 'warning'
                 });
                 return true;
@@ -1044,11 +1186,12 @@ export default {
                             type: 'success'
                         });
                         that.timeUpdateShow = false;
+                        that.initForm();
                         if (that.tabIndex != 0) {
                             that.initDataDir(that.tabIndex);
+                            return true;
                         }
                         that.initData();
-                        that.initForm();
                     })
                     .catch((err) => {});
             } else if (index == 3) {
@@ -1061,11 +1204,12 @@ export default {
                             type: 'success'
                         });
                         that.timeUpdateShow = false;
+                        that.initForm();
                         if (that.tabIndex != 0) {
                             that.initDataDir(that.tabIndex);
+                            return true;
                         }
                         that.initData();
-                        that.initForm();
                     })
                     .catch((err) => {});
             }
@@ -1075,7 +1219,7 @@ export default {
             this.timeUpdateShow = false;
         },
         // index 代表点击的什么按钮 1.审核认证 2.稽核
-        // 添加认证计划弹框的所需三个方法
+        // 添加稽核计划弹框的所需三个方法
         addAuthPlan(row, index) {
             this.formChoose.planId = row.id;
             this.formChoose.userId = this.userData.user.id;
@@ -1134,13 +1278,17 @@ export default {
                         if (that.tabIndex != 0) {
                             that.initDataDir(that.tabIndex);
                         }
-                        that.initData();
                         that.initForm();
+                        if (that.tabIndex != 0) {
+                            that.initDataDir(that.tabIndex);
+                            return true;
+                        }
+                        that.initData();
                     })
                     .catch((err) => {});
             }
         },
-        // 添加认证计划弹框的所需三个方法
+        // 添加计划弹框的所需三个方法
         addPlan() {
             this.planShow = true;
         },
@@ -1201,6 +1349,7 @@ export default {
                 })
                 .catch((err) => {});
         },
+        // 添加收集计划并设定认证计划时间弹框所需方法
         settingPlan(row) {
             if (row.planGather.actualTime == null) {
                 this.$message({
@@ -1209,6 +1358,15 @@ export default {
                 });
                 return true;
             }
+            if (this.userData.role[0].roles.roleCode != 'admin') {
+                if (row.planGather.userId != this.userData.user.id) {
+                    this.$message({
+                        message: '无法操作'
+                    });
+                    return true;
+                }
+            }
+
             this.planGatherShow = true;
             this.gatherForm.planId = row.id;
         },
@@ -1245,6 +1403,10 @@ export default {
                     });
                     that.planGatherShow = false;
                     that.initData();
+                    if (that.tabIndex != '' || that.tabIndex != 0) {
+                        that.initDataDir(that.tabIndex);
+                        return true;
+                    }
                     that.initForm();
                 })
                 .catch((err) => {});
@@ -1293,30 +1455,32 @@ export default {
         },
         // 将表单的值重置
         initForm() {
-            this.form = {
-                content: '',
-                dirId: '',
-                gatherTime: '',
-                depPrincipal: ''
-            };
-            this.formChoose = {
+            (this.formUpdate = {
                 time: '',
                 planId: '',
                 userId: '',
-                operaId: ''
-            };
-            this.formUpdate = {
-                time: '',
-                planId: '',
-                userId: '',
-                operaId: ''
-            };
-            this.gatherForm={
-                // content: '',
-                planId: '',
-                gatherTime: '',
-                authUsers: []
-            }
+                operaId: '',
+                checkUsers: []
+            }),
+                (this.formChoose = {
+                    time: '',
+                    planId: '',
+                    userId: '',
+                    operaId: '',
+                    checkUsers: []
+                }),
+                (this.form = {
+                    content: '',
+                    dirId: '',
+                    gatherTime: '',
+                    depPrincipal: ''
+                }),
+                (this.gatherForm = {
+                    // content: '',
+                    planId: '',
+                    gatherTime: '',
+                    authUsers: []
+                });
         },
         // 合并单元格
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -1363,6 +1527,9 @@ export default {
                         }
                         return 'background-color: #67C23A';
                     } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
+                        if (this.calendarIsSame(row.planGather.planTime)) {
+                            return 'background-color: #F56C6C';
+                        }
                         return 'background-color: #67C23A';
                     }
                 }
@@ -1393,11 +1560,16 @@ export default {
             if (columnIndex == 3) {
                 if (row.planGather != null) {
                     if (row.planGather.planTime != null && row.planGather.actualTime == null) {
+                        console.log('aaaa');
                         if (this.calendarIsSame(row.planGather.planTime)) {
+                            console.log('ssss');
                             return 'background-color: #F56C6C';
                         }
                         return 'background-color: #67C23A';
                     } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
+                        if (this.calendarIsSame(row.planGather.planTime)) {
+                            return 'background-color: #F56C6C';
+                        }
                         return 'background-color: #67C23A';
                     }
                 }
@@ -1426,16 +1598,22 @@ export default {
         // 表头颜色
         tableHeaderColor({ row, rowIndex, columnIndex }) {
             if (rowIndex === 0 && columnIndex === 3) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 0 && columnIndex === 4) {
                 return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 0 && columnIndex === 5) {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
-            if (rowIndex === 1 && columnIndex === 3) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+            if (rowIndex === 1 && columnIndex === 0) {
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 1) {
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 2) {
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 3) {
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 4) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 5) {
                 return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 6) {
@@ -1452,27 +1630,33 @@ export default {
         },
         tabTableHeaderColor({ row, rowIndex, columnIndex }) {
             if (rowIndex === 0 && columnIndex === 2) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 0 && columnIndex === 3) {
                 return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 0 && columnIndex === 4) {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
             if (rowIndex === 1 && columnIndex === 0) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 1) {
-                return 'background-color: #409EFF;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 2) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 3) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 4) {
-                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+                return 'background-color: #20D7A0;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 5) {
-                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 6) {
-                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
             } else if (rowIndex === 1 && columnIndex === 7) {
+                return 'background-color: #ffff66;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 8) {
+                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 9) {
+                return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
+            } else if (rowIndex === 1 && columnIndex === 10) {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
         },

@@ -79,15 +79,17 @@ export default {
             this.$axios
                 .get('api/role/getFileAuth?userId=' + that.user)
                 .then((result) => {
+                
                     console.log(result.data);
                     that.tableData = result.data;
                 })
                 .catch((error) => {
-                    if (error.response.status == '403') {
-                        this.$router.push('/login');
-                    } else {
-                        this.$message.error(error.response.data.message);
-                    }
+                    console.log(error.response);
+                    // if (error.response.status == '403') {
+                    //     this.$router.push('/login');
+                    // } else {
+                    //     this.$message.error(error.response.data.message);
+                    // }
                 });
         }
     },
@@ -97,15 +99,17 @@ export default {
         this.$axios
             .get('api/user/show')
             .then((result) => {
-                console.log(result.data.obj);
+                console.log(result.data.sssssss);
+                console.log(result.data.code == 777);
+                // console.log(result.data.obj);
                 that.userOptions = result.data.obj;
             })
             .catch((error) => {
-                if (error.response.status == '403') {
-                    this.$router.push('/login');
-                } else {
-                    this.$message.error(error.response.data.message);
-                }
+                // if (error.response.status == '403') {
+                //     this.$router.push('/login');
+                // } else {
+                //     this.$message.error(error.response.data.message);
+                // }
             });
         // 文件列表
         this.$axios
@@ -115,11 +119,11 @@ export default {
                 console.log(that.fileOptions);
             })
             .catch((error) => {
-                if (error.response.status == '403') {
-                    this.$router.push('/login');
-                } else {
-                    this.$message.error(error.response.data.message);
-                }
+                // if (error.response.status == '403') {
+                //     this.$router.push('/login');
+                // } else {
+                //     this.$message.error(error.response.data.message);
+                // }
                 // console.log(error.response.data.message);
             });
         this.$axios
@@ -128,11 +132,11 @@ export default {
                 that.authOptions = result.data.obj;
             })
             .catch((error) => {
-                if (error.response.status == '403') {
-                    this.$router.push('/login');
-                } else {
-                    this.$message.error(error.response.data.message);
-                }
+                // if (error.response.status == '403') {
+                //     this.$router.push('/login');
+                // } else {
+                //     this.$message.error(error.response.data.message);
+                // }
             });
     }
 };

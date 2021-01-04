@@ -91,7 +91,7 @@ export default {
                 dirId: ''
             },
             department: [],
-            directory:[],
+            directory: [],
             roles: {},
             files: []
         };
@@ -213,6 +213,7 @@ export default {
             this.title = '';
             this.index = 0;
         },
+        // iAcrYC0
         initData() {
             const header = {
                 headers: {
@@ -252,13 +253,14 @@ export default {
                 .catch((error) => {
                     this.$message.error(error.response.data.message);
                 });
-                this.$axios.get('api/plan/getDir',header)
-                .then(res=>{
-                    this.directory=res.data;
+            this.$axios
+                .get('api/plan/getDir', header)
+                .then((res) => {
+                    this.directory = res.data;
                 })
-                .catch(error=>{
+                .catch((error) => {
                     this.$message.error(error);
-                })
+                });
         }
     },
 
