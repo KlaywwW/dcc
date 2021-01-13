@@ -66,10 +66,10 @@ l<template>
                                 :data="tableData"
                                 style="width: 100%"
                                 border
-                                :span-method="objectSpanMethod"
                                 :cell-style="cellStyle"
                                 :header-cell-style="tableHeaderColor"
                             >
+                                <!-- 合并单元格 :span-method="objectSpanMethod" -->
                                 <el-table-column prop="dirName" label="四大标准" width="120" fixed></el-table-column>
                                 <el-table-column type="index" label="No" width="40"></el-table-column>
                                 <el-table-column prop="content" label="认证项目" fixed></el-table-column>
@@ -96,7 +96,7 @@ l<template>
                                 </el-table-column>
                                 <el-table-column label="审核认证">
                                     <el-table-column prop="planAuth.authPlanTime" label="计划时间"></el-table-column>
-                                    <el-table-column label="认证人员">
+                                    <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
                                         <template slot-scope="scope">
                                             <div v-if="scope.row.planAuth != null">
                                                 <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
@@ -124,7 +124,7 @@ l<template>
                                 </el-table-column>
                                 <el-table-column label="稽核">
                                     <el-table-column prop="planCheck.checkPlanTime" label="计划时间"></el-table-column>
-                                    <el-table-column label="稽核人员">
+                                    <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
                                         <template slot-scope="scope">
                                             <div v-if="scope.row.planCheck != null">
                                                 <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
@@ -216,7 +216,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="审核认证">
                                 <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="认证人员">
+                                <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
@@ -242,7 +242,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="稽核">
                                 <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="稽核人员">
+                                <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
@@ -331,7 +331,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="审核认证">
                                 <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="认证人员">
+                                <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
@@ -357,7 +357,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="稽核">
                                 <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="稽核人员">
+                                <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
@@ -446,7 +446,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="审核认证">
                                 <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="认证人员">
+                                <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
@@ -472,7 +472,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="稽核">
                                 <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="稽核人员">
+                                <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
@@ -561,7 +561,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="审核认证">
                                 <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="认证人员">
+                                <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth != null">
                                             <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
@@ -587,7 +587,7 @@ l<template>
                             </el-table-column>
                             <el-table-column label="稽核">
                                 <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
-                                <el-table-column label="稽核人员">
+                                <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planCheck != null">
                                             <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
@@ -1522,36 +1522,44 @@ export default {
             if (columnIndex == 4) {
                 if (row.planGather != null) {
                     if (row.planGather.planTime != null && row.planGather.actualTime == null) {
-                        if (this.calendarIsSame(row.planGather.planTime)) {
+                        if (this.calendarLt(row.planGather.planTime)) {
                             return 'background-color: #F56C6C';
+                        } else if (this.calendarSame(row.planGather.planTime)) {
+                            return 'background-color: #67C23A';
                         }
-                        return 'background-color: #67C23A';
-                    } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
-                        if (this.calendarIsSame(row.planGather.planTime)) {
-                            return 'background-color: #F56C6C';
-                        }
-                        return 'background-color: #67C23A';
+                        return null;
                     }
+                    //  else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
+                    //     if (this.calendarLt(row.planGather.planTime)) {
+                    //         return 'background-color: #F56C6C';
+                    //     }
+                    //     return 'background-color: #67C23A';
+                    // }
                 }
             }
             if (columnIndex == 8) {
                 if (row.planAuth != null) {
                     if (row.planAuth.authPlanTime != null && row.planAuth.authActualTime == null) {
-                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                        if (this.calendarLt(row.planAuth.authPlanTime)) {
                             return 'background-color: #F56C6C';
+                        } else if (this.calendarSame(row.planAuth.authPlanTime)) {
+                            return 'background-color: #67C23A';
                         }
-                        return 'background-color: #67C23A';
-                    } else if (row.planAuth.authActualTime != null && row.planCheck == null) {
-                        return 'background-color: #67C23A';
+                        return null;
                     }
+                    //  else if (row.planAuth.authActualTime != null && row.planCheck == null) {
+                    //     return 'background-color: #67C23A';
+                    // }
                 }
             }
             if (columnIndex == 11) {
                 if (row.planCheck != null && row.planCheck.checkPlanTime != null) {
-                    if (this.calendarIsSame(row.planCheck.checkPlanTime)) {
+                    if (this.calendarLt(row.planCheck.checkPlanTime)) {
                         return 'background-color: #F56C6C';
+                    } else if (this.calendarSame(row.planCheck.checkPlanTime)) {
+                        return 'background-color: #67C23A';
                     }
-                    return 'background-color: #67C23A';
+                    return null;
                 }
             }
         },
@@ -1560,38 +1568,44 @@ export default {
             if (columnIndex == 3) {
                 if (row.planGather != null) {
                     if (row.planGather.planTime != null && row.planGather.actualTime == null) {
-                        console.log('aaaa');
-                        if (this.calendarIsSame(row.planGather.planTime)) {
-                            console.log('ssss');
+                        if (this.calendarLt(row.planGather.planTime)) {
                             return 'background-color: #F56C6C';
+                        } else if (this.calendarSame(row.planGather.planTime)) {
+                            return 'background-color: #67C23A';
                         }
-                        return 'background-color: #67C23A';
-                    } else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
-                        if (this.calendarIsSame(row.planGather.planTime)) {
-                            return 'background-color: #F56C6C';
-                        }
-                        return 'background-color: #67C23A';
+                        return null;
                     }
+                    //  else if (row.planGather.actualTime != null && row.planGather.gatherPlanTime == null) {
+                    //     if (this.calendarLt(row.planGather.planTime)) {
+                    //         return 'background-color: #F56C6C';
+                    //     }
+                    //     return 'background-color: #67C23A';
+                    // }
                 }
             }
             if (columnIndex == 7) {
                 if (row.planAuth != null) {
                     if (row.planAuth.authPlanTime != null && row.planAuth.authActualTime == null) {
-                        if (this.calendarIsSame(row.planAuth.authPlanTime)) {
+                        if (this.calendarLt(row.planAuth.authPlanTime)) {
                             return 'background-color: #F56C6C';
+                        } else if (this.calendarSame(row.planAuth.authPlanTime)) {
+                            return 'background-color: #67C23A';
                         }
-                        return 'background-color: #67C23A';
-                    } else if (row.planAuth.authActualTime != null && row.planCheck == null) {
-                        return 'background-color: #67C23A';
+                        return null;
                     }
+                    //  else if (row.planAuth.authActualTime != null && row.planCheck == null) {
+                    //     return 'background-color: #67C23A';
+                    // }
                 }
             }
             if (columnIndex == 10) {
                 if (row.planCheck != null && row.planCheck.checkPlanTime != null) {
-                    if (this.calendarIsSame(row.planCheck.checkPlanTime)) {
+                    if (this.calendarLt(row.planCheck.checkPlanTime)) {
                         return 'background-color: #F56C6C';
+                    } else if (this.calendarSame(row.planCheck.checkPlanTime)) {
+                        return 'background-color: #67C23A';
                     }
-                    return 'background-color: #67C23A';
+                    return null;
                 }
             }
         },
@@ -1660,8 +1674,8 @@ export default {
                 return 'background-color: #AD89A7;text-align:center;font-size:16;color:black;';
             }
         },
-        // 日期判断
-        calendarIsSame(str) {
+        // 日期判断 超过红色，当天绿色，其他无色
+        calendarLt(str) {
             var date = new Date(str);
             var year = date.getFullYear();
             var month = date.getMonth() + 1;
@@ -1682,6 +1696,26 @@ export default {
 
             // console.log(year + '年' + month + '月' + day + '日 ');
             return false;
+        },
+        calendarSame(str) {
+            var date = new Date(str);
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+
+            var calendar = new Date();
+            var calYear = calendar.getFullYear();
+            var calMonth = calendar.getMonth() + 1;
+            var calDay = calendar.getDate();
+
+            // if (year < calYear) {
+            //     return true;
+            // } else if (year == calYear && month < calMonth) {
+            //     return true;
+            // } else if (year == calYear && month == calMonth && day < calDay) {
+            //     return true;
+            // }
+            return year == calYear && month == calMonth && day == calDay;
         }
     }
 };

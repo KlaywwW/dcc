@@ -64,9 +64,8 @@ router.beforeEach((to, from, next) => {
                     let count = 0;
                     for (let i = 0; i < menus.length; i++) {
                         if (menus[i].menu.menuPath == to.path) {
-                            console.log();
                             next();
-                            return;
+                            return true;
                         }
                     }
                     console.log("/403");

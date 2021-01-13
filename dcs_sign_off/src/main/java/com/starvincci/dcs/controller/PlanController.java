@@ -137,7 +137,7 @@ public class PlanController {
 
 
     /**
-     *
+     *添加认证计划
      * @param strs
      * @return
      */
@@ -486,21 +486,26 @@ public class PlanController {
             int checkCount = 0;
             if (planGather != null && planAuth == null) {
                 if (planGather.getPlanTime() != null && (planGather.getActualTime() == null || "".equals(planGather.getActualTime()))) {
-                    if (new CalendarUtil().isSame(planGather.getPlanTime())) {
+                    if (new CalendarUtil().ltNow(planGather.getPlanTime())) {
                         gatherCount++;
                     }
                 }
+//                else if(planGather.getPlanTime() != null && (planGather.getGatherPlanTime() == null || "".equals(planGather.getGatherPlanTime()))){
+//                    if (new CalendarUtil().ltNow(planGather.getPlanTime())) {
+//                        gatherCount++;
+//                    }
+//                }
             }
 
             if (planAuth != null && planCheck == null) {
                 if (planAuth.getAuthPlanTime() != null && (planAuth.getAuthActualTime() == null || "".equals(planAuth.getAuthActualTime()))) {
-                    if (new CalendarUtil().isSame(planAuth.getAuthPlanTime())) {
+                    if (new CalendarUtil().ltNow(planAuth.getAuthPlanTime())) {
                         authCount++;
                     }
                 }
             } else if (planAuth != null && planCheck != null) {
                 if (planCheck.getCheckPlanTime() != null && (planCheck.getCheckActualTime() == null || "".equals(planCheck.getCheckActualTime()))) {
-                    if (new CalendarUtil().isSame(planCheck.getCheckPlanTime())) {
+                    if (new CalendarUtil().ltNow(planCheck.getCheckPlanTime())) {
                         checkCount++;
                     }
                 }
@@ -593,7 +598,6 @@ public class PlanController {
                             }
                             planAuth.setUsers(authUsers);
                             plan.setPlanAuth(planAuth);
-
                             plan.setPlanCheck(planCheck);
                         }
                     }
