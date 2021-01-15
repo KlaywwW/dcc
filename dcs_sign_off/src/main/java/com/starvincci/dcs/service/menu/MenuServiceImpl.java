@@ -25,4 +25,24 @@ public class MenuServiceImpl implements MenuService {
     public List<UserMenu> getUserMenuByUid(Integer userId) {
         return menuMapper.getUserMenuByUid(userId);
     }
+
+    @Override
+    public int addUserMenu(Integer mid, Integer uid) {
+        return menuMapper.addUserMenu(mid,uid);
+    }
+
+    @Override
+    public List<Menu> getAllMenus() {
+        return menuMapper.getAllMenus();
+    }
+
+    @Override
+    public int delUserMenu(Integer mid, Integer uid) {
+        return menuMapper.delUserMenu(mid,uid);
+    }
+
+    @Override
+    public UserMenu getSameUserMenu(Integer mid, Integer uid) {
+        return menuMapper.getSameUserMenu(mid,uid);
+    }
 }

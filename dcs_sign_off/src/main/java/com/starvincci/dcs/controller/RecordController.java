@@ -2,12 +2,11 @@ package com.starvincci.dcs.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.starvincci.dcs.pojo.record.Record;
-import com.starvincci.dcs.pojo.user.UserRole;
 import com.starvincci.dcs.pojo.user.UserRoleFile;
 import com.starvincci.dcs.service.files.FilesServiceImpl;
 import com.starvincci.dcs.service.record.RecordServiceImpl;
 import com.starvincci.dcs.service.user.UserRoleFileServiceImpl;
-import com.starvincci.dcs.service.user.UserRoleServiceImpl;
+//import com.starvincci.dcs.service.user.UserRoleServiceImpl;
 import com.starvincci.dcs.service.user.UserServiceImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +20,27 @@ import java.util.List;
 @RequestMapping("/record")
 public class RecordController {
 
+    /**
+     * 上传
+     */
+    private String UPLOAD = "upload";
+    /**
+     * 下载
+     */
+    private String DOWNLOAD = "download";
+    /**
+     * 查看
+     */
+    private String LOOK = "look";
+    /**
+     * 修改
+     */
+    private String UPDATE = "update";
+
     @Resource
     private RecordServiceImpl recordService;
     @Resource
     private FilesServiceImpl filesService;
-    @Resource
-    private UserRoleServiceImpl userRoleService;
     @Resource
     private UserRoleFileServiceImpl userRoleFileService;
     @Resource
@@ -50,20 +64,20 @@ public class RecordController {
         record.setFileId(Integer.parseInt(jsonObject.get("fileId").toString()));
         System.out.println(record.toString());
 
-        Record resRecord =new Record();
+        Record resRecord = new Record();
         if ("更新".equals(jsonObject.get("content").toString())) {
             Record record1 = recordService.findRecordOnlyApply(record);
             if (record1 != null) {
                 return "该文件已有用户提交更新申请";
             }
             Record record2 = recordService.findRecordOnlyPass(record);
-            if(record2!=null){
+            if (record2 != null) {
                 return "无法申请，存在已通过审核但并未更新文件的记录";
             }
-        }else{
+        } else {
             //        判断当前文件只能有一个用户申请更新，不能重复申请
-             resRecord = recordService.findRecordOnly(record);
-             System.out.println(resRecord);
+            resRecord = recordService.findRecordOnly(record);
+            System.out.println(resRecord);
             if (resRecord != null) {
                 return "请勿重复申请";
             }
@@ -115,41 +129,44 @@ public class RecordController {
         System.out.println(newRecord.toString());
 //       通过 添加权限
         if (status == 2) {
-            List<UserRole> userRoleList = userRoleService.getAllUserRole(jsonObject.getInteger("userId"));
-            for (UserRole userRole : userRoleList) {
-                if (userRole.getRoles().getRoleName().equals(jsonObject.getString("applyContent"))) {
-
-
-                    UserRoleFile userRoleFile = new UserRoleFile();
-                    userRoleFile.setUserRoleId(userRole.getId());
-                    userRoleFile.setFileId(jsonObject.getInteger("fileId"));
-                    userRoleFile.setInForce(null);
-
-                    UserRoleFile userRoleFileOnly = userRoleFileService.getUserRoleFileOnly(userRoleFile);
-                    if (userRoleFileOnly == null) {
-                        int res = userRoleFileService.addUserRoleFile(userRoleFile);
-                        if (res == 1) {
-                            System.out.println("添加权限");
-                        }
-                    }
-                }
+            UserRoleFile userRoleFile = new UserRoleFile();
+            userRoleFile.setUserId(jsonObject.getInteger("userId"));
+            userRoleFile.setFileId(jsonObject.getInteger("fileId"));
+            String applyContent = jsonObject.getString("applyContent");
+            String look = "浏览";
+            String download = "下载";
+            String upload = "上传";
+            String update = "更新";
+            if (look.equals(applyContent)) {
+                userRoleFile.setOperation(LOOK);
+            } else if (download.equals(applyContent)) {
+                userRoleFile.setOperation(DOWNLOAD);
+            } else if (upload.equals(applyContent)) {
+                userRoleFile.setOperation(UPLOAD);
+            } else if (update.equals(applyContent)) {
+                userRoleFile.setOperation(UPDATE);
+            }
+//
+            UserRoleFile userRoleFileOnly = userRoleFileService.getUserRoleFileOnly(userRoleFile);
+            if (userRoleFileOnly == null) {
+//                添加权限
+                System.err.println(userRoleFile.toString());
+                userRoleFileService.addUserRoleFile(userRoleFile);
             }
         }
-        Record record2=new Record();
+//        不通过只需修改状态，不用添加权限
+        Record record2 = new Record();
         record2.setFileId(jsonObject.getInteger("fileId"));
         record2.setApplyContent(jsonObject.getString("applyContent"));
-
-        Record record=recordService.findRecordOnlyPass(record2);
-            if (record!=null){
-                return "审核失败,存在已通过审核但并未更新文件的记录";
-            }
+        Record record = recordService.findRecordOnlyPass(record2);
+        if (record != null) {
+            return "审核失败,存在已通过审核但并未更新文件的记录";
+        }
 
         int res = recordService.updateRecord(newRecord);
         if (res == 1) {
             return "操作成功";
         }
-
-
         return "操作失败";
     }
 

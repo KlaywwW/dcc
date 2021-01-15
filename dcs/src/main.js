@@ -35,15 +35,15 @@ Vue.use(ElementUI, {
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | dcc`;
     let userData = sessionStorage.getItem("userData");
-    let role = false;
+    let role = null;
     let menus = null;
     if (userData != null) {
-        role = JSON.parse(sessionStorage.getItem('userData')).role[0].roles.roleCode;
+        role = JSON.parse(userData).role;
         menus = JSON.parse(userData).menu
     }
     console.log(to.path);
     // 在没有登录时无法去到任何组件
-    if (!role && to.path !== '/login') {
+    if (userData == null && to.path !== '/login') {
         next('/login');
     } else if (to.path == '/403') {
         console.log("403")
@@ -58,20 +58,17 @@ router.beforeEach((to, from, next) => {
                 confirmButtonText: '确定'
             });
         } else {
-            if (role != "admin") {
-                console.log(role != "admin");
-                if (menus != null) {
-                    let count = 0;
-                    for (let i = 0; i < menus.length; i++) {
-                        if (menus[i].menu.menuPath == to.path) {
-                            next();
-                            return true;
-                        }
+            if (menus != null) {
+                let count = 0;
+                for (let i = 0; i < menus.length; i++) {
+                    if (menus[i].menu.menuPath == to.path) {
+                        next();
+                        return true;
                     }
-                    console.log("/403");
-                    next('/403');
-                    return true;
                 }
+                console.log("/403");
+                next('/403');
+                return true;
             }
             next();
         }

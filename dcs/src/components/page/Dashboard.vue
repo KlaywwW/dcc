@@ -222,21 +222,10 @@ export default {
     },
     computed: {
         role() {
-            let roleName = sessionStorage.getItem('userData');
+            let roleName = JSON.parse(sessionStorage.getItem('userData')).user.roleGroup.groupName;
             if (roleName == null) {
                 roleName = '请登录';
-            } else {
-                let role = JSON.parse(roleName).role[0].roles.roleCode;
-                // console.log(role)
-
-                if (role == 'admin') {
-                    roleName = '超级管理员';
-                } else if ((role = 'user')) {
-                    roleName = '普通用户';
-                } else {
-                    roleName = '不认识你o(╥﹏╥)o';
-                }
-            }
+            } 
             return roleName;
         },
         account() {

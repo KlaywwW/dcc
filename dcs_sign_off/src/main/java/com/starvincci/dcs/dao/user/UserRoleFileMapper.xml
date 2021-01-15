@@ -3,19 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starvincci.dcs.dao.user.UserRoleFileMapper">
-    <select id="getAllByUserRoleId" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
-      SELECT * FROM user_role_file WHERE userRoleId=#{userRoleId}
+    <select id="getAllByUserId" resultMap="roleFile">
+      SELECT * FROM user_role_file urf inner join files f on urf.fileId=f.filesId WHERE urf.userId=#{userId}
   </select>
+    <resultMap id="roleFile" type="com.starvincci.dcs.pojo.user.UserRoleFile">
+        <result column="id" property="id"></result>
+        <result column="userId" property="userId"></result>
+        <result column="fileId" property="fileId"></result>
+        <result column="operation" property="operation"></result>
+        <association property="files" javaType="com.starvincci.dcs.pojo.files.Files">
+            <result column="filesId" property="filesId"></result>
+            <result column="filesName" property="filesName"></result>
+            <result column="filesPath" property="filesPath"></result>
+            <result column="cdate" property="cdate"></result>
+            <result column="cuser" property="cuser"></result>
+            <result column="departmentId" property="departmentId"></result>
+            <result column="isoNo" property="isoNo"></result>
+            <result column="version" property="version"></result>
+            <result column="originalFileId" property="originalFileId"></result>
+            <result column="versionNo" property="versionNo"></result>
+            <result column="dirId" property="dirId"></result>
+            <result column="userId" property="userId"></result>
+        </association>
+    </resultMap>
 
     <select id="getUserRoleFileOnly" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
-      SELECT * FROM user_role_file WHERE userRoleId=#{userRoleId} and fileId=#{fileId}
+      SELECT * FROM user_role_file WHERE userId=#{userId} and fileId=#{fileId}
     </select>
     <insert id="addUserRoleFile" parameterType="com.starvincci.dcs.pojo.user.UserRoleFile">
-        INSERT INTO user_role_file VALUES (null,#{userRoleId},#{fileId},#{inForce})
+        INSERT INTO user_role_file VALUES (null,#{userId},#{fileId},#{operation})
     </insert>
 
-    <select id="getUserRoleFileByFileId" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
-         SELECT * FROM user_role_file WHERE fileId=#{fileId}
+    <select id="getUserRoleFileByFileId"  resultMap="roleFile">
+         SELECT * FROM user_role_file urf inner join files f on urf.fileId=f.filesId  WHERE urf.fileId=#{fileId}
     </select>
 
 </mapper>

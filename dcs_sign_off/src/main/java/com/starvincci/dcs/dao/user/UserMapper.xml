@@ -3,22 +3,42 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starvincci.dcs.dao.user.UserMapper">
-    
+
     <insert id="addUser" parameterType="com.starvincci.dcs.pojo.user.Users">
-        INSERT INTO users VALUES (null,#{account},#{password},#{departmentId},#{username},#{age},0,#{dirId})
+        INSERT INTO users
+        VALUES (null, #{account}, #{password}, #{departmentId}, #{username}, #{age}, 0, #{roleGroupId})
     </insert>
 
     <update id="updateUserStatus">
-        UPDATE users SET isStatus=1 WHERE id=#{userId}
+        UPDATE users
+        SET isStatus=1
+        WHERE id = #{userId}
     </update>
-    
+
     <select id="getAllUsers" resultMap="users">
-       SELECT u.id,u.`account`,u.`password`,u.`username`,u.`age`,u.`isStatus`,u.`departmentId`,u.dirId,d.`departmentName`FROM users u
-       INNER JOIN department d ON u.`departmentId`=d.`id`
---        INNER JOIN user_role ur ON u.`id`=ur.`userId`
---        INNER JOIN roles r ON r.`roleId`=ur.`roleId`
+        SELECT u.id,
+               u.`account`,
+               u.`password`,
+               u.`username`,
+               u.`age`,
+               u.`isStatus`,
+               u.`departmentId`,
+               u.roleGroupId,
+               d.`departmentName`,
+               rg.groupName
+        FROM users u
+                 INNER JOIN department d ON u.`departmentId` = d.`id`
+                 inner join role_group rg on rg.groupId = u.roleGroupId
     </select>
-    
+
+    <select id="findByAccount" resultMap="users" parameterType="com.starvincci.dcs.pojo.user.Users">
+        SELECT *
+        from users u
+                 INNER JOIN department d on u.departmentId = d.id
+                 inner join role_group rg on rg.groupId = u.roleGroupId
+        where account = #{account}
+    </select>
+
     <resultMap id="users" type="com.starvincci.dcs.pojo.user.Users">
         <result column="id" property="id"></result>
         <result property="account" column="account"></result>
@@ -27,23 +47,30 @@
         <result property="username" column="username"></result>
         <result property="age" column="age"></result>
         <result property="isStatus" column="isStatus"></result>
-        <result property="dirId" column="dirId"></result>
+        <result property="roleGroupId" column="roleGroupId"></result>
         <association property="department" javaType="com.starvincci.dcs.pojo.user.Department">
             <result property="departmentName" column="departmentName"></result>
         </association>
-        <!--<collection property="userRoleList" resultMap="rolesList" />-->
+        <association property="roleGroup" javaType="com.starvincci.dcs.pojo.user.RoleGroup">
+            <result property="groupName" column="groupName"></result>
+        </association>
     </resultMap>
 
     <update id="updateUsers" parameterType="com.starvincci.dcs.pojo.user.Users">
-        UPDATE users SET account=#{account},password=#{password},username=#{username},departmentId=#{departmentId},age=#{age},isStatus=#{isStatus},dirId=#{dirId} WHERE id=#{id}
+        UPDATE users
+        SET account=#{account},
+            password=#{password},
+            username=#{username},
+            departmentId=#{departmentId},
+            isStatus=#{isStatus},
+            roleGroupId=#{roleGroupId}
+        WHERE id = #{id}
     </update>
 
-    <select id="findByAccount" resultMap="users" parameterType="com.starvincci.dcs.pojo.user.Users">
-        SELECT * from users u INNER JOIN department d on u.departmentId=d.id where account=#{account}
-    </select>
 
     <select id="getAllDep" resultMap="dep">
-        SELECT * FROM department
+        SELECT *
+        FROM department
     </select>
     <resultMap id="dep" type="com.starvincci.dcs.pojo.user.Department">
         <result column="id" property="id"></result>
@@ -51,16 +78,24 @@
     </resultMap>
 
     <select id="getUserById" resultType="com.starvincci.dcs.pojo.user.Users">
-        SELECT * FROM users WHERE id =#{userId}
+        SELECT *
+        FROM users
+        WHERE id = #{userId}
     </select>
     <select id="getDepById" resultType="com.starvincci.dcs.pojo.user.Department">
-        SELECT * FROM  department WHERE id=#{departmentId}
+        SELECT *
+        FROM department
+        WHERE id = #{departmentId}
     </select>
     <select id="getDirById" resultType="com.starvincci.dcs.pojo.Directory">
-         SELECT * FROM directory WHERE id=#{dirId}
+        SELECT *
+        FROM directory
+        WHERE id = #{dirId}
     </select>
     <select id="getUserTop" resultType="com.starvincci.dcs.pojo.user.Users">
-        select * from users ORDER BY id desc LIMIT 0,1
+        select *
+        from users
+        ORDER BY id desc LIMIT 0,1
     </select>
 
 </mapper>

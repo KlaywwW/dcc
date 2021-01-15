@@ -16,8 +16,8 @@ public class UserRoleFileServiceImpl implements UserRoleFileService {
 
 
     @Override
-    public List<UserRoleFile> getAllByUserRoleId(Integer userRoleId) {
-        return userRoleFileMapper.getAllByUserRoleId(userRoleId);
+    public List<UserRoleFile> getAllByUserId(Integer userId) {
+        return userRoleFileMapper.getAllByUserId(userId);
     }
 
     @Override
@@ -28,10 +28,5 @@ public class UserRoleFileServiceImpl implements UserRoleFileService {
     @Override
     public int addUserRoleFile(UserRoleFile userRoleFile) {
         return userRoleFileMapper.addUserRoleFile(userRoleFile);
-    }
-
-    @Override
-    public List<UserRoleFile> getUserRoleFileByFileId(Integer fileId) {
-        return userRoleFileMapper.getUserRoleFileByFileId(fileId);
     }
 }

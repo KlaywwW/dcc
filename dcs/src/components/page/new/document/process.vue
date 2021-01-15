@@ -149,7 +149,7 @@ l<template>
                                         <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                             <el-row>
                                                 <el-col :span="24">
-                                                    <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
+                                                    <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
                                                         >设定稽核计划时间</el-button
                                                     >
                                                 </el-col>
@@ -165,7 +165,7 @@ l<template>
                                         <div v-else-if="scope.row.planCheck.checkActualTime == null">
                                             <el-row>
                                                 <el-col :span="24">
-                                                    <el-button type="primary" plain size="mini" @click="pass(scope.row, 1)"
+                                                    <el-button type="primary" plain size="mini" @click="pass(scope.row)"
                                                         >稽核通过</el-button
                                                     >
                                                 </el-col>
@@ -267,7 +267,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
+                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
                                                     >设定稽核计划时间</el-button
                                                 >
                                             </el-col>
@@ -283,7 +283,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck.checkActualTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="pass(scope.row, 1)">稽核通过</el-button>
+                                                <el-button type="primary" plain size="mini" @click="pass(scope.row)">稽核通过</el-button>
                                             </el-col>
                                         </el-row>
                                         <el-row>
@@ -382,7 +382,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
+                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
                                                     >设定稽核计划时间</el-button
                                                 >
                                             </el-col>
@@ -398,7 +398,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck.checkActualTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="pass(scope.row, 1)">稽核通过</el-button>
+                                                <el-button type="primary" plain size="mini" @click="pass(scope.row)">稽核通过</el-button>
                                             </el-col>
                                         </el-row>
                                         <el-row>
@@ -497,7 +497,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
+                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
                                                     >设定稽核计划时间</el-button
                                                 >
                                             </el-col>
@@ -513,7 +513,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck.checkActualTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="pass(scope.row, 1)">稽核通过</el-button>
+                                                <el-button type="primary" plain size="mini" @click="pass(scope.row)">稽核通过</el-button>
                                             </el-col>
                                         </el-row>
                                         <el-row>
@@ -612,7 +612,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row, 2)"
+                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
                                                     >设定稽核计划时间</el-button
                                                 >
                                             </el-col>
@@ -628,7 +628,7 @@ l<template>
                                     <div v-else-if="scope.row.planCheck.checkActualTime == null">
                                         <el-row>
                                             <el-col :span="24">
-                                                <el-button type="primary" plain size="mini" @click="pass(scope.row, 1)">稽核通过</el-button>
+                                                <el-button type="primary" plain size="mini" @click="pass(scope.row)">稽核通过</el-button>
                                             </el-col>
                                         </el-row>
                                         <el-row>
@@ -966,45 +966,39 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    if (that.userData.role[0].roles.roleCode != 'admin') {
+                    let role = that.userData.role;
+                    if (index == 1) {
+                        if (role.length <= 0) {
+                            that.$message('无权限操作');
+                            return true;
+                        }
                         let count = 0;
-                        if (index == 1) {
-                            if (row.planGather.userId == that.userData.user.id) {
-                                count = 1;
-                            }
-                        } else if (index == 2) {
-                            for (let i = 0; i < row.planAuth.users.length; i++) {
-                                if (row.planAuth.users[i].id == that.userData.user.id) {
-                                    count++;
-                                }
+                        for (let i = 0; i < role.length; i++) {
+                            let roleCode = role[i].roleCode;
+                            if (roleCode == 'dir1' && row.dirId == 1) {
+                                count++;
                             }
                         }
-
-                        if (count > 0) {
-                            that.$axios
-                                .get('api/plan/verify?planId=' + row.id + '&userId=' + that.userData.user.id + '&index=' + index)
-                                .then((res) => {
-                                    if (that.tabIndex != 0) {
-                                        that.initDataDir(that.tabIndex);
-                                        return true;
-                                    }
-                                    that.initData();
-                                })
-                                .catch((res) => {});
+                        if (count <= 0) {
+                            that.$message('无权限操作');
                         } else {
-                            that.$message('无法操作');
+                            that.sure(row.id, that.userData.user.id, index);
                         }
-                    } else {
-                        that.$axios
-                            .get('api/plan/verify?planId=' + row.id + '&userId=' + that.userData.user.id + '&index=' + index)
-                            .then((res) => {
-                                if (that.tabIndex != 0) {
-                                    that.initDataDir(that.tabIndex);
-                                    return true;
-                                }
-                                that.initData();
-                            })
-                            .catch((res) => {});
+                    } else if (index == 2) {
+                        let userCount = 0;
+                        if (this.userData.user.roleGroupId == 1) {
+                            userCount = 1;
+                        }
+                        for (let i = 0; i < row.planAuth.users.length; i++) {
+                            if (row.planAuth.users[i].id == that.userData.user.id) {
+                                userCount++;
+                            }
+                        }
+                        if (userCount > 0) {
+                            that.sure(row.id, that.userData.user.id, index);
+                        } else {
+                            that.$message('无权限操作');
+                        }
                     }
                 })
                 .catch(() => {
@@ -1017,58 +1011,65 @@ export default {
             // console.log(row);
             // console.log(this.userData);
         },
+        // 确认完成 请求后台方法
+        sure(id, userId, index) {
+            let that = this;
+            that.$axios
+                .get('api/plan/verify?planId=' + id + '&userId=' + userId + '&index=' + index)
+                .then((res) => {
+                    if (that.tabIndex != 0) {
+                        that.initDataDir(that.tabIndex);
+                        return true;
+                    }
+                    that.initData();
+                })
+                .catch((res) => {});
+        },
         // 稽核通过的方法
-        pass(row, index) {
-            let count = 0;
+        pass(row) {
             let that = this;
             let form = {
                 planId: row.id,
-                userId: this.userData.user.id,
-                index: index
+                userId: this.userData.user.id
             };
-            if (this.userData.role[0].roles.roleCode != 'admin') {
-                for (let i = 0; i < row.planCheck.users.length; i++) {
-                    if (row.planCheck.users[i].id == this.userData.user.id) {
-                        count++;
-                    }
-                }
-                if (count > 0) {
-                    this.$axios
-                        .post('api/plan/passCheck', form)
-                        .then((res) => {
-                            this.$message({
-                                message: res.data,
-                                type: 'success'
-                            });
-                            if (that.tabIndex != 0) {
-                                that.initDataDir(that.tabIndex);
-                                return true;
-                            }
-                            that.initData();
-                        })
-                        .catch((error) => {});
-                } else {
-                    this.$message({
-                        message: '无法操作'
-                    });
-                    return true;
-                }
-            } else {
-                this.$axios
-                    .post('api/plan/passCheck', form)
-                    .then((res) => {
-                        this.$message({
-                            message: res.data,
-                            type: 'success'
-                        });
-                        if (that.tabIndex != 0) {
-                            that.initDataDir(that.tabIndex);
-                            return true;
-                        }
-                        that.initData();
-                    })
-                    .catch((error) => {});
+
+            let role = that.userData.role;
+            if (role.length <= 0) {
+                that.$message('无权限操作');
+                return true;
             }
+            let count = 0;
+            if (this.userData.user.roleGroupId == 1) {
+                count = 1;
+            }
+            for (let i = 0; i < role.length; i++) {
+                let roleCode = role[i].roleCode;
+                if (roleCode == 'checkDir1' || roleCode == 'checkDir2' || roleCode == 'checkDir3' || roleCode == 'checkDir4') {
+                    count++;
+                }
+            }
+            if (count <= 0) {
+                that.$message('无权限操作');
+            } else {
+                that.operaPassCheck(form);
+            }
+        },
+        operaPassCheck(form) {
+            let that = this;
+            this.$axios
+                .post('api/plan/passCheck', form)
+                .then((res) => {
+                    this.$message({
+                        message: res.data,
+                        type: 'success'
+                    });
+                    if (that.tabIndex != 0) {
+                        that.initDataDir(that.tabIndex);
+                        return true;
+                    }
+                    that.initData();
+                })
+                .catch((error) => {});
         },
         // 修改计划时间弹框的所需三个方法
         updatePlan(row, index) {
@@ -1091,7 +1092,7 @@ export default {
             }
 
             if (index == 2) {
-                if (this.userData.role[0].roles.roleCode != 'admin') {
+                if (this.userData.user.roleGroupId != 1) {
                     for (let i = 0; i < row.planAuth.users.length; i++) {
                         if (row.planAuth.users[i].id == this.userData.user.id) {
                             count++;
@@ -1113,12 +1114,21 @@ export default {
                     this.timeUpdateShow = true;
                 }
             } else if (index == 3) {
-                if (this.userData.role[0].roles.roleCode != 'admin') {
-                    for (let i = 0; i < row.planCheck.users.length; i++) {
-                        if (row.planCheck.users[i].id == this.userData.user.id) {
+                if (this.userData.user.roleGroupId != 1) {
+                    let role = that.userData.role;
+                    if (role.length <= 0) {
+                        that.$message('无权限操作');
+                        return true;
+                    }
+                    let count = 0;
+                    for (let i = 0; i < role.length; i++) {
+                        let roleCode = role[i].roleCode;
+                        if (roleCode == 'checkDir1' || roleCode == 'checkDir2' || roleCode == 'checkDir3' || roleCode == 'checkDir4') {
                             count++;
                         }
                     }
+                    
+
                     if (count > 0) {
                         that.formUpdate.checkUsers = planCheckUsers;
                         this.title = '修改计划稽核时间';
@@ -1220,12 +1230,29 @@ export default {
         },
         // index 代表点击的什么按钮 1.审核认证 2.稽核
         // 添加稽核计划弹框的所需三个方法
-        addAuthPlan(row, index) {
+        addAuthPlan(row) {
             this.formChoose.planId = row.id;
             this.formChoose.userId = this.userData.user.id;
-            this.formChoose.operaId = index;
+            let that = this;
 
-            if (index == 2) {
+            let role = that.userData.role;
+            if (role.length <= 0) {
+                that.$message('无权限操作');
+                return true;
+            }
+            let count = 0;
+            if (this.userData.user.roleGroupId == 1) {
+                count = 1;
+            }
+            for (let i = 0; i < role.length; i++) {
+                let roleCode = role[i].roleCode;
+                if (roleCode == 'checkDir1' || roleCode == 'checkDir2' || roleCode == 'checkDir3' || roleCode == 'checkDir4') {
+                    count++;
+                }
+            }
+            if (count <= 0) {
+                that.$message('无权限操作');
+            } else {
                 this.title = '设定计划稽核时间';
                 if (row.planAuth.authActualTime == null) {
                     this.$message({
@@ -1234,9 +1261,8 @@ export default {
                     });
                     return true;
                 }
+                this.timeChoseShow = true;
             }
-            this.timeChoseShow = true;
-            console.log(row);
         },
         cancelChose() {
             this.initForm();
@@ -1244,7 +1270,6 @@ export default {
         },
         submitChose() {
             let that = this;
-            let index = this.formChoose.operaId;
             let form = {
                 time: this.formChoose.time,
                 planId: this.formChoose.planId,
@@ -1265,32 +1290,46 @@ export default {
                 });
                 return true;
             }
-            if (index == 2) {
-                console.log('添加稽核计划');
-                this.$axios
-                    .post('api/plan/addPlanCheck', form)
-                    .then((res) => {
-                        this.$message({
-                            message: res.data,
-                            type: 'success'
-                        });
-                        that.timeChoseShow = false;
-                        if (that.tabIndex != 0) {
-                            that.initDataDir(that.tabIndex);
-                        }
-                        that.initForm();
-                        if (that.tabIndex != 0) {
-                            that.initDataDir(that.tabIndex);
-                            return true;
-                        }
-                        that.initData();
-                    })
-                    .catch((err) => {});
-            }
+            console.log('添加稽核计划');
+            this.$axios
+                .post('api/plan/addPlanCheck', form)
+                .then((res) => {
+                    this.$message({
+                        message: res.data,
+                        type: 'success'
+                    });
+                    that.timeChoseShow = false;
+                    if (that.tabIndex != 0) {
+                        that.initDataDir(that.tabIndex);
+                    }
+                    that.initForm();
+                    if (that.tabIndex != 0) {
+                        that.initDataDir(that.tabIndex);
+                        return true;
+                    }
+                    that.initData();
+                })
+                .catch((err) => {});
         },
         // 添加计划弹框的所需三个方法
         addPlan() {
-            this.planShow = true;
+            let role = this.userData.role;
+            if (role.length > 0) {
+                let count = 0;
+                for (let i = 0; i < role.length; i++) {
+                    let roleCode = role[i].roleCode;
+                    if (roleCode == 'dir1' || roleCode == 'dir2' || roleCode == 'dir3' || roleCode == 'dir4') {
+                        count++;
+                    }
+                }
+                if (count <= 0) {
+                    this.$message('无权限操作');
+                } else {
+                    this.planShow = true;
+                    return true;
+                }
+            }
+            this.$message('无权限操作');
         },
         cancel() {
             this.initForm();
@@ -1351,6 +1390,8 @@ export default {
         },
         // 添加收集计划并设定认证计划时间弹框所需方法
         settingPlan(row) {
+            console.log(this.userData);
+            console.log(row);
             if (row.planGather.actualTime == null) {
                 this.$message({
                     message: '请确认完成收集资料',
@@ -1358,7 +1399,7 @@ export default {
                 });
                 return true;
             }
-            if (this.userData.role[0].roles.roleCode != 'admin') {
+            if (this.userData.user.roleGroupId != 1) {
                 if (row.planGather.userId != this.userData.user.id) {
                     this.$message({
                         message: '无法操作'

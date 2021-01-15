@@ -2,12 +2,15 @@ package com.starvincci.dcs.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.starvincci.dcs.dao.menu.MenuMapper;
+import com.starvincci.dcs.dao.user.RoleMapper;
 import com.starvincci.dcs.pojo.*;
+import com.starvincci.dcs.pojo.menu.UserMenu;
 import com.starvincci.dcs.pojo.user.Department;
 import com.starvincci.dcs.pojo.user.Roles;
-import com.starvincci.dcs.pojo.user.UserRole;
 import com.starvincci.dcs.pojo.user.Users;
-import com.starvincci.dcs.service.user.UserRoleServiceImpl;
+import com.starvincci.dcs.service.menu.MenuServiceImpl;
+import com.starvincci.dcs.service.user.RoleServiceImpl;
 import com.starvincci.dcs.service.user.UserService;
 import com.starvincci.dcs.service.user.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -23,39 +27,43 @@ import java.util.List;
 public class UserController {
 
     @Resource
-    private UserRoleServiceImpl userRoleService;
-    @Resource
     private UserServiceImpl userService;
+    @Resource
+    private RoleServiceImpl roleService;
+    @Resource
+    private MenuServiceImpl menuService;
 
+    /**
+     *
+     *
+     * @return
+     */
     @GetMapping("/show")
-    public RespBean login(HttpServletRequest request) {
+    public RespBean show() {
 
         List<Users> usersList = userService.getAllUsers();
-        List<Users> usersAndRoles = new ArrayList<>();
+        List<Roles> roleByGroupId =null;
+        List<UserMenu> userMenu =null;
+        HashMap<String,Object> map=null;
         for (Users user : usersList) {
-            user.setUserRoleList(userRoleService.getAllUserRole(user.getId()));
-            usersAndRoles.add(user);
+            roleByGroupId = roleService.getRoleByGroupId(user.getRoleGroupId());
+            userMenu = menuService.getUserMenuByUid(user.getId());
+            map=new HashMap<>();
+            map.put("roles",roleByGroupId);
+            map.put("menus",userMenu);
+            user.setUserMap(map);
         }
-        return RespBean.ok("ok", usersAndRoles);
+        return RespBean.ok("ok", usersList);
     }
 
     @GetMapping("/department")
     public RespBean getDepartment(HttpServletRequest request) {
-
         List<Department> departmentList = userService.getAllDep();
-
         return RespBean.ok("ok", departmentList);
     }
 
-    @GetMapping("/roles")
-    public RespBean getRoles(HttpServletRequest request) {
 
-        List<Roles> rolesList = userRoleService.getAllRoles();
-
-        return RespBean.ok("ok", rolesList);
-    }
-
-    @PutMapping("/updateUser/{id}")
+    @PostMapping("/updateUser/{id}")
     public RespBean updateUser(@PathVariable Integer id, @RequestBody String data) {
         System.out.println(data);
         JSONObject jsonObject = JSON.parseObject(data);
@@ -66,17 +74,16 @@ public class UserController {
         user.setPassword(jsonObject.getString("password"));
         user.setAge(0);
         user.setUsername(jsonObject.getString("username"));
-        user.setDirId(jsonObject.getInteger("dirId"));
-        if (jsonObject.getString("delivery") == "true") {
+        user.setDepartmentId(jsonObject.getInteger("dep"));
+        user.setRoleGroupId(jsonObject.getInteger("roleGroupId"));
+        if (jsonObject.getString("delivery") == "true" || "true".equals(jsonObject.getString("delivery"))) {
             user.setIsStatus(1);
         } else {
             user.setIsStatus(0);
         }
-        user.setDepartmentId(jsonObject.getInteger("dep"));
         int resUser = userService.updateUsers(user);
 
         if (resUser == 1) {
-
             return RespBean.ok("ok");
         }
         return RespBean.error("error");
@@ -86,15 +93,16 @@ public class UserController {
     private String addUser(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
         System.out.println(strs);
-
         Users users = new Users();
         users.setAccount(jsonObject.getString("account"));
         users.setUsername(jsonObject.getString("username"));
         users.setPassword(jsonObject.getString("password"));
-        users.setDirId(jsonObject.getInteger("dirId"));
-        users.setAge(0);
         users.setDepartmentId(jsonObject.getInteger("dep"));
+        //用户组默认为普通用户
+        users.setRoleGroupId(jsonObject.getInteger("roleGroupId"));
+        users.setAge(0);
         System.err.println(users.toString());
+
         Users resUser = userService.findByAccount(users);
         if (resUser != null) {
             return "添加失败，存在相同账号名";
@@ -103,21 +111,49 @@ public class UserController {
         if (res == 1) {
 
             Users newUsers = userService.getUserTop();
-            UserRole userRole1 = new UserRole();
-            userRole1.setUserId(newUsers.getId());
-            userRole1.setRoleId(3);
-            int roleRes1 = userRoleService.addUserRole(userRole1);
-            UserRole userRole2 = new UserRole();
-            userRole2.setUserId(newUsers.getId());
-            userRole2.setRoleId(4);
-            int roleRes2 = userRoleService.addUserRole(userRole2);
-            if (roleRes1 > 0 && roleRes2 > 0) {
+//            新用户默认进入首页
+            int menuResult=menuService.addUserMenu(1,newUsers.getId());
+
+            if (menuResult==1){
                 return "添加成功";
             }
-
         }
 
         return "添加失败";
+    }
+
+    @GetMapping("/getAllMenu")
+    public RespBean getAllMenu(){
+        return RespBean.ok("ok",menuService.getAllMenus());
+    }
+
+    @PostMapping("/addUserMenu")
+    public RespBean addUserMenu(@RequestBody String strs){
+        JSONObject jsonObject = JSON.parseObject(strs);
+        Integer mid=jsonObject.getInteger("mid");
+        Integer uid=jsonObject.getInteger("uid");
+        UserMenu userMenu=menuService.getSameUserMenu(mid,uid);
+        if (userMenu==null){
+            int result = menuService.addUserMenu(mid, uid);
+            if (result==1){
+                return RespBean.ok("添加成功");
+            }
+        }else{
+            return RespBean.ok("已存在");
+        }
+        return RespBean.error("添加失败");
+    }
+    @GetMapping("/delUserMenu")
+    public RespBean delUserMenu(@RequestParam("mid") Integer mid,@RequestParam("uid") Integer uid){
+        int result=menuService.delUserMenu(mid,uid);
+        if (result==1){
+            return RespBean.ok("删除成功");
+        }
+        return RespBean.ok("删除失败");
+    }
+    @GetMapping("/getUserMenuByUid")
+    public RespBean getUserMenuByUid(@RequestParam("uid") Integer uid){
+        return RespBean.ok("ok",menuService.getUserMenuByUid(uid));
     }
 
 }

@@ -6,13 +6,7 @@
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column type="index" :index="indexMethod" label="序号"> </el-table-column>
             <el-table-column prop="account" label="用户名"> </el-table-column>
-            <el-table-column label="权限">
-                <template slot-scope="scope">
-                    <div v-for="(item, i) in scope.row.userRoleList" :key="i">
-                        <span>{{ item.roles.roleName }}</span>
-                    </div>
-                </template>
-            </el-table-column>
+            <el-table-column prop="roleGroup.groupName" label="用户组"> </el-table-column>
             <el-table-column prop="username" label="姓名"> </el-table-column>
             <el-table-column prop="department.departmentName" label="部门"> </el-table-column>
 
@@ -44,23 +38,20 @@
                 <el-form-item label="姓名">
                     <el-input v-model="form.username" class="inputclass"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="年龄">
-                    <el-input v-model="form.age" class="inputclass"></el-input>
-                </el-form-item> -->
                 <el-form-item label="部门">
                     <el-select placeholder="请选择部门" v-model="form.dep">
                         <el-option v-for="dep in department" :key="dep.id" :label="dep.departmentName" :value="dep.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="用户组">
+                    <el-select placeholder="请选择用户组" v-model="form.roleGroupId">
+                        <el-option v-for="group in roleGroup" :key="group.groupId" :label="group.groupName" :value="group.groupId"></el-option>
                     </el-select>
                 </el-form-item>
 
                 <el-form-item label="账号状态:">
                     <el-switch v-model="form.delivery" active-text="禁用"></el-switch>
                 </el-form-item>
-                <!-- <el-form-item label="负责的认证项目">
-                    <el-select v-model="form.dirId">
-                        <el-option v-for="dir in directory" :key="dir.id" :label="dir.dirName" :value="dir.id"></el-option>
-                    </el-select>
-                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
@@ -88,12 +79,13 @@ export default {
                 age: '',
                 delivery: false,
                 dep: '',
-                dirId: ''
+                roleGroupId: ''
             },
             department: [],
             directory: [],
             roles: {},
-            files: []
+            files: [],
+            roleGroup:[]
         };
     },
     methods: {
@@ -106,8 +98,34 @@ export default {
             this.dialogFormVisible = false;
             this.clearForm();
         },
-        operationUser() {
-            let index = this.index;
+        handleClick(row) {
+            this.title = '修改用户';
+            this.index = 2;
+            const header = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            };
+            console.log(row);
+            var _this = this;
+            this.form.id = row.id;
+            this.form.account = row.account;
+            this.form.password = row.password;
+            this.form.username = row.username;
+            this.form.age = row.age;
+            this.form.dep = row.departmentId;
+            this.form.roleGroupId = row.roleGroupId;
+            if (row.isStatus == 1) {
+                _this.form.delivery = true;
+            } else {
+                _this.form.delivery = false;
+            }
+            this.dialogFormVisible = true;
+        },
+         operationUser() {
+            let index = this.index;//index == 1 添加用户 index == 2 修改用户
             console.log(this.form);
             if (index == 1) {
                 this.$axios
@@ -120,7 +138,7 @@ export default {
                     .catch((res) => {});
             } else if (index == 2)
                 this.$axios
-                    .put('api/user/updateUser/' + this.form.id, this.form)
+                    .post('api/user/updateUser/' + this.form.id, this.form)
                     .then((success) => {
                         console.log(success);
                         if (success.statusText == 'OK') {
@@ -133,66 +151,6 @@ export default {
                         this.$message.error('修改失败!' + error.response.statusText);
                     });
             this.dialogFormVisible = false;
-        },
-        handleClick(row) {
-            this.title = '修改用户';
-            this.index = 2;
-            const header = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json; charset=UTF-8'
-                }
-            };
-
-            console.log(row);
-            var _this = this;
-            this.form.id = row.id;
-            this.form.account = row.account;
-            this.form.password = row.password;
-            this.form.username = row.username;
-            this.form.age = row.age;
-            this.form.dep = row.departmentId;
-            this.form.dirId = row.dirId;
-            if (row.isStatus == 1) {
-                _this.form.delivery = true;
-            } else {
-                _this.form.delivery = false;
-            }
-            // for (var i = 0; i < row.userRoleList.length; i++) {
-            //     this.form.roleGroup[i] = row.userRoleList[i].roleId;
-            //     this.form.file[i]=row.userRoleList[i].fileId;
-            // }
-            console.log(this.form.roleGroup);
-            // 获取角色信息
-            this.$axios
-                .get('api/user/roles', header)
-                .then((result) => {
-                    this.roles = result.data.obj;
-                    console.log(this.roles);
-                })
-                .catch((error) => {
-                    this.$message.error(error.response.data.message);
-                });
-            // 获取部门信息
-            this.$axios
-                .get('api/user/department', header)
-                .then((result) => {
-                    this.department = result.data.obj;
-                })
-                .catch((error) => {
-                    this.$message.error(error.response.data.message);
-                });
-            // 获取所有文件
-            // this.$axios
-            //     .get('api/file/showFileList', header)
-            //     .then((result) => {
-            //         this.files = result.data.data;
-            //     })
-            //     .catch((error) => {
-            //         this.$message.error(error.response.data.message);
-            //     });
-            this.dialogFormVisible = true;
         },
         indexMethod(index) {
             return index + 1;
@@ -208,7 +166,7 @@ export default {
                 age: '',
                 delivery: false,
                 dep: '',
-                dirId: ''
+                roleGroupId: ''
             };
             this.title = '';
             this.index = 0;
@@ -235,15 +193,6 @@ export default {
                         this.$message.error(error.response.data.message);
                     }
                 });
-            this.$axios
-                .get('api/user/roles', header)
-                .then((result) => {
-                    this.roles = result.data.obj;
-                    console.log(this.roles);
-                })
-                .catch((error) => {
-                    this.$message.error(error.response.data.message);
-                });
             // 获取部门信息
             this.$axios
                 .get('api/user/department', header)
@@ -260,6 +209,19 @@ export default {
                 })
                 .catch((error) => {
                     this.$message.error(error);
+                });
+                 let that = this;
+            // 查询权限组
+            this.$axios
+                .get('/api/role/getRoleGroup')
+                .then((res) => {
+                    this.roleGroup = res.data.obj;
+                })
+                .catch((res) => {
+                    this.$message({
+                        message: '连接错误',
+                        type: 'warning'
+                    });
                 });
         }
     },

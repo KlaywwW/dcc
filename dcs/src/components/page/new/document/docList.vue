@@ -25,7 +25,7 @@
         <el-button type="primary" @click="selectByDep">查询</el-button>
     </div>
     <div id="upload">
-        <el-upload class="upload-demo" ref="upload" :action="uploadPath" :on-preview="handlePreview" :on-remove="handleRemove" :auto-upload="false" :file-list="fileList" :limit="1" name="file" :http-request="fileUpload" :headers="headers" :disabled="authenStatus==1?false:true">
+        <el-upload class="upload-demo" ref="upload" :action="uploadPath" :on-preview="handlePreview" :on-remove="handleRemove" :auto-upload="false" :file-list="fileList" :limit="1" name="file" :http-request="fileUpload" :headers="headers" :disabled="uploadStatus==1?false:true">
             <el-button slot="trigger" size="small" type="primary" @click="choiceFile">选取文件</el-button>
             <el-button style="margin-left: 0.5rem;" size="small" type="success" @click="submitUpload">{{upload}}<i class="el-icon-upload el-icon--right"></i></el-button>
         </el-upload>
@@ -78,7 +78,7 @@
                 </el-table-column> -->
                 <el-table-column label="更新版本">
                     <template slot-scope="scope" >
-                        <el-upload class="upload-demo"  :file-list="fileUpdateList" :action="updatePath" :headers="headers" name="file" :http-request="updateUpload" :data="{fileId:scope.row.filesId,departmentId:scope.row.departmentId}" :disabled="authenStatus==1?false:true">
+                        <el-upload class="upload-demo"  :file-list="fileUpdateList" :action="updatePath" :headers="headers" name="file" :http-request="updateUpload" :data="{fileId:scope.row.filesId,departmentId:scope.row.departmentId}" :disabled="updateStatus==1?false:true">
                             <el-button type="primary"  @click="docUpdate(scope.row)">{{update}}</el-button>
                         </el-upload>
                     </template>
@@ -141,7 +141,8 @@ export default {
             depValue: '', //选中部门的值
             dirId: '', //菜单id
             options: [],
-            authenStatus: 1,
+            updateStatus: 0,
+            uploadStatus:0,
             dialogVisible: false,
             uploadDialog: false,
             userData: {},
@@ -172,28 +173,13 @@ export default {
     },
     created() {
         var that = this;
-        let role = JSON.parse(sessionStorage.getItem('userData')).role[0].roles.roleCode;
-        if (role != 'admin') {
-            this.look = '预览';
-            this.upload = '上传文件到服务器';
-            this.download = '下载';
-            this.update = '更新';
-        }
+        this.look = '预览';
+        this.upload = '上传文件到服务器';
+        this.download = '下载';
+        this.update = '更新';
         this.userData = JSON.parse(sessionStorage.getItem('userData'));
+        
         let user = this.userData.user;
-        this.authenStatus = this.userData.role[0].roleId;
-        //      页面刷新时也可将用户的权限更新
-        let userId = this.userData.user.id;
-        let roles;
-        this.$axios.get('api/role/getFileAuth?userId=' + userId).then((res) => {
-            roles = res.data;
-            this.userData = {
-                user: user,
-                role: roles
-            };
-            sessionStorage.removeItem('userData');
-            sessionStorage.setItem('userData', JSON.stringify(this.userData));
-        });
         this.$axios.get('api/file/getAllDep').then((res) => {
             that.options = res.data.data;
         });
@@ -302,31 +288,30 @@ export default {
             });
         },
         // 权限判断
-        allot(roleId, row) {
-            var that = this;
-            console.log(row.filesId);
-            console.log(row);
-            console.log(that.userData);
+        allot(operation, row) {
+            let that = this;
             let auth = false;
-            for (var i = 0; i < that.userData.role.length; i++) {
-                if (that.userData.role[i].roleId == 1) {
+
+            let role = this.userData.role;
+            for (let j = 0; j < role.length; j++) {
+                if (role[j].roleCode == operation) {
                     auth = true;
-                    break;
-                } else {
-                    if (that.userData.role[i].roleId == roleId && that.userData.role[i].userRoleFileList.length > 0) {
-                        for (var j = 0; j < that.userData.role[i].userRoleFileList.length; j++) {
-                            if (that.userData.role[i].userRoleFileList[j].fileId == row.filesId) {
-                                auth = true;
-                            }
-                        }
-                    }
+                    return auth;
                 }
             }
+            console.log('kkk');
+            let roleFile = this.userData.roleFile;
+            for (let i = 0; i < roleFile.length; i++) {
+                if (roleFile[i].fileId == row.filesId && roleFile[i].operation == operation) {
+                    auth = true;
+                }
+            }
+
             return auth;
         },
         //数据库中2.上传 3.下载 4.查看 5.更新
         docShow(row) {
-            if (!this.allot(4, row)) {
+            if (!this.allot('look', row)) {
                 this.form.content = '浏览';
                 this.dialogVisible = true;
                 this.form.fileId = row.filesId;
@@ -335,9 +320,9 @@ export default {
                 let fileSuffix = row.filesName.substring(row.filesName.lastIndexOf('.'));
                 if (suffix == fileSuffix) {
                     sessionStorage.setItem('pdf', JSON.stringify(row));
-                    this.$axios.get('api/file/showPdfRecord?fileId='+row.filesId+'&userId=' + this.userData.user.id).then((res) => {
+                    this.$axios.get('api/file/showPdfRecord?fileId=' + row.filesId + '&userId=' + this.userData.user.id).then((res) => {
                         this.$router.push('/showPdf');
-                        console.log(row)
+                        console.log(row);
                     });
                 } else {
                     this.$message({
@@ -348,8 +333,7 @@ export default {
             }
         },
         docDownload(row) {
-            console.log(row);
-            if (!this.allot(3, row)) {
+            if (!this.allot('download', row)) {
                 this.form.content = '下载';
                 this.dialogVisible = true;
                 this.form.fileId = row.filesId;
@@ -386,12 +370,13 @@ export default {
         },
         docUpdate(row) {
             console.log(row);
-            if (!this.allot(5, row)) {
+            if (!this.allot('update', row)) {
                 this.form.content = '更新';
                 this.dialogVisible = true;
                 this.form.fileId = row.filesId;
             } else {
                 // console.log(true);
+                this.updateStatus=1
             }
         },
         docHistory(row) {
@@ -410,14 +395,12 @@ export default {
             let that = this;
             let count = 0;
             for (var i = 0; i < that.userData.role.length; i++) {
-                if (that.userData.role[i].roleId == 1) {
-                    that.authenStatus = 1;
-                    break;
-                } else {
+                if (that.userData.role[i].roleCode == "upload") {
+                    that.uploadStatus=1;
                     count++;
                 }
             }
-            if (count > 0) {
+            if (count <= 0) {
                 this.$message({
                     message: '无权限操作',
                     type: 'warning'
@@ -457,21 +440,9 @@ export default {
             console.log(that.$refs.upload._data.uploadFiles.length);
             console.log(that.userData);
             let count = 0;
-            for (var i = 0; i < that.userData.role.length; i++) {
-                if (that.userData.role[i].roles.roleCode === 'admin') {
-                    count++;
-                }
-            }
             if (that.$refs.upload._data.uploadFiles.length === 0) {
                 that.$message({
                     message: '选择文件后上传',
-                    type: 'warning'
-                });
-                return true;
-            }
-            if (count <= 0) {
-                that.$message({
-                    message: '无操作权限',
                     type: 'warning'
                 });
                 return true;

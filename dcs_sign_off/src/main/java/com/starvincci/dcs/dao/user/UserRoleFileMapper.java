@@ -9,11 +9,11 @@ import java.util.List;
 public interface UserRoleFileMapper {
 
     /**
-     * 获取文件权限
-     * @param userRoleId
+     * 根据用户id查询文件可操作范围
+     * @param userId 用户id
      * @return
      */
-    List<UserRoleFile> getAllByUserRoleId(Integer userRoleId);
+    List<UserRoleFile> getAllByUserId(Integer userId);
 
     /**
      * 判断是否存在
@@ -21,7 +21,6 @@ public interface UserRoleFileMapper {
      * @return
      */
     UserRoleFile getUserRoleFileOnly(UserRoleFile userRoleFile);
-
     /**
      * 给文件添加权限
      * @param userRoleFile
@@ -29,5 +28,10 @@ public interface UserRoleFileMapper {
      */
     int addUserRoleFile(UserRoleFile userRoleFile);
 
+    /**
+     * 根据文件id查询文件可操作范围
+     * @param fileId
+     * @return
+     */
     List<UserRoleFile> getUserRoleFileByFileId(Integer fileId);
 }

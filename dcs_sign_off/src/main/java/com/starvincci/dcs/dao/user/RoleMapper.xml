@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starvincci.dcs.dao.user.RoleMapper">
+    <insert id="addRoleGroup">
+        insert into role_group values(null,#{groupName});
+    </insert>
+    <insert id="addRolesToGroup">
+        insert  into user_role_group values(null,#{roleId},#{groupId})
+    </insert>
+    <update id="updateGroupName">
+        update role_group set groupName=#{groupName} where groupId=#{groupId}
+    </update>
+    <delete id="delRole">
+        delete from user_role_group where groupId=#{groupId} and roleId=#{roleId};
+    </delete>
+
+
+    <select id="getRoleByGroupId" resultMap="rolesMap">
+        select * from roles r INNER JOIN user_role_group urg on r.roleId=urg.roleId WHERE urg.groupId=#{groupId}
+    </select>
+    <resultMap id="rolesMap" type="com.starvincci.dcs.pojo.user.Roles">
+        <result column="roleId" property="roleId"></result>
+        <result column="roleName" property="roleName"></result>
+        <result column="roleCode" property="roleCode"></result>
+        <association property="userRoleGroup" javaType="com.starvincci.dcs.pojo.user.UserRoleGroup">
+            <result column="id" property="id"></result>
+            <result column="groupId" property="groupId"></result>
+        </association>
+    </resultMap>
+    <select id="getAllRoleGroup" resultType="com.starvincci.dcs.pojo.user.RoleGroup">
+        select *  from  role_group
+    </select>
+    <select id="getAllRoles" resultType="com.starvincci.dcs.pojo.user.Roles">
+        select * from roles
+    </select>
+    <select id="getSame" resultType="com.starvincci.dcs.pojo.user.UserRoleGroup">
+        select * from user_role_group where roleId=#{roleId} and groupId=#{groupId}
+    </select>
+</mapper>

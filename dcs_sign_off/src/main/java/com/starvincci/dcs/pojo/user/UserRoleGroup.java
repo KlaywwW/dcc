@@ -6,18 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * 权限
- */
+import java.util.List;
 @Data
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
-public class Roles {
+public class UserRoleGroup {
 
+  private Integer id;
   private Integer roleId;
-  private String roleName;
-  private String roleCode;
-  private UserRoleGroup userRoleGroup;
+  private Integer groupId;
+
 
 }

@@ -113,7 +113,8 @@ export default {
     created() {
         let that = this;
         this.userData = JSON.parse(sessionStorage.getItem('userData'));
-        if (this.userData.role[0].roles.roleCode == 'admin') {
+        let user=this.userData.user;
+        if(user.roleGroup.groupName=="管理员" || user.roleGroup.groupName=="文件管理员"){
             that.adminShow = true;
             that.selectShow = false;
             that.statusOneShow = false;
@@ -123,30 +124,6 @@ export default {
                 .then((result) => {
                     console.log(result.data);
                     that.tableData = result.data;
-                    // for (let i = 0; i < result.data.length; i++) {
-                    //     let applyStatus='';
-                    //     if(result.data[i].applyStatus==1){
-                    //         applyStatus="待审核"
-                    //     }else if(result.data[i].applyStatus==2){
-                    //         applyStatus="审核通过"
-                    //     }else if(result.data[i].applyStatus==3){
-                    //         applyStatus="审核未通过"
-                    //     }
-                    //     let tableData={
-                    //         applyContent:result.data[i].applyContent,
-                    //         applyDate:result.data[i].applyDate,
-                    //         applyName:result.data[i].applyName,
-                    //         applyPassDate:result.data[i].applyPassDate,
-                    //         applyStatus:applyStatus,
-                    //         fileId:result.data[i].fileId,
-                    //         files:result.data[i].files,
-                    //         id:result.data[i].id,
-                    //         inForce:result.data[i].inForce,
-                    //         operator:result.data[i].operator,
-                    //         userId:result.data[i].userId
-                    //     }
-                    //     that.tableData.push(tableData);
-                    // }
                 })
                 .catch((error) => {
                     console.log(error);

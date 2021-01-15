@@ -48,14 +48,6 @@
 				let data = new FormData();
 				data.append("username", this.param.username);
 				data.append("password", this.param.password);
-				// this.$axios({
-				//     method:"post",
-				//     url:"api/login",
-				//     headers: {
-				// 	  "Content-Type": "multipart/form-data"
-				//     },
-				// 	data:params
-				// })
 				this.$axios.post('api/login', data)
 					.then(result => {
 						console.log(result);

@@ -112,16 +112,17 @@ export default {
                     title: '管理面板',
                     subs: [
                         {
-                            index: 'authority',
-                            title: '权限查看'
+                            index: 'userList',
+                            title: '用户管理'
                         },
                         {
-                            index: 'userList',
-                            title: '用户列表'
+                            index: 'authority',
+                            title: '权限管理'
                         },
+                        
                         {
                             index: 'reviewList',
-                            title: '审核列表'
+                            title: '审核管理'
                         },
                         {
                             index: 'logs',

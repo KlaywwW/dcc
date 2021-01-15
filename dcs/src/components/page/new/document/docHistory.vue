@@ -61,46 +61,32 @@ export default {
         this.$axios.get('api/file/getFilesVersion?original=' + original.originalFileId).then((res) => {
             that.tableData = res.data.data;
         });
-
         this.userData = JSON.parse(sessionStorage.getItem('userData'));
-        let user = this.userData.user;
-        let userId = this.userData.user.id;
-        let roles;
-        this.$axios.get('api/role/getFileAuth?userId=' + userId).then((res) => {
-            roles = res.data;
-            this.userData = {
-                user: user,
-                role: roles
-            };
-            sessionStorage.removeItem('userData');
-            sessionStorage.setItem('userData', JSON.stringify(this.userData));
-        });
     },
     methods: {
-        allot(roleId, row) {
-            var that = this;
-            console.log(row.filesId);
-            console.log(row);
-            console.log(that.userData);
+        allot(operation, row) {
+           let that = this;
             let auth = false;
-            for (var i = 0; i < that.userData.role.length; i++) {
-                if (that.userData.role[i].roleId == 1) {
+
+            let role = this.userData.role;
+            for (let j = 0; j < role.length; j++) {
+                if (role[j].roleCode == operation) {
                     auth = true;
-                    break;
-                } else {
-                    if (that.userData.role[i].roleId == roleId && that.userData.role[i].userRoleFileList.length > 0) {
-                        for (var j = 0; j < that.userData.role[i].userRoleFileList.length; j++) {
-                            if (that.userData.role[i].userRoleFileList[j].fileId == row.filesId) {
-                                auth = true;
-                            }
-                        }
-                    }
+                    return auth;
                 }
             }
+            console.log('kkk');
+            let roleFile = this.userData.roleFile;
+            for (let i = 0; i < roleFile.length; i++) {
+                if (roleFile[i].fileId == row.filesId && roleFile[i].operation == operation) {
+                    auth = true;
+                }
+            }
+
             return auth;
         },
         docShow(row) {
-            if (!this.allot(4, row)) {
+            if (!this.allot("look", row)) {
                 this.form.content = '浏览';
                 this.dialogVisible = true;
                 this.form.fileId = row.filesId;
@@ -123,7 +109,7 @@ export default {
         },
         docDownload(row) {
             console.log(row);
-            if (!this.allot(3, row)) {
+            if (!this.allot("download", row)) {
                 this.form.content = '下载';
                 this.dialogVisible = true;
                 this.form.fileId = row.filesId;
