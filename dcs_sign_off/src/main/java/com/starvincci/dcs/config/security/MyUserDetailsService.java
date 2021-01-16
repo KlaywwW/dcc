@@ -32,7 +32,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Resource
     private UserMapper userMapper;
     @Resource
-    private RoleServiceImpl RoleService;
+    private RoleServiceImpl roleService;
     @Resource
     private UserRoleFileService userRoleFileService;
     @Resource
@@ -43,7 +43,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
-        System.out.println("s-----"+s);
+        System.out.println("用户名-----"+s);
         Users users = new Users();
         users.setAccount(s);
 
@@ -51,23 +51,10 @@ public class MyUserDetailsService implements UserDetailsService {
         if (resultUser == null) {
             throw new UsernameNotFoundException("Username :" + s + "not found");
         }
-//        List<UserRole> roles = userRoleService.getAllUserRole(reulstUser.getId());
-//        List<UserRole> userRoleList=userRoleService.getAllUserRole(resultUser.getId());
-//        for (UserRole userRole: userRoleList) {
-//            List<UserRoleFile> userRoleFileList=userRoleFileService.getAllByUserRoleId(userRole.getId());
-//            for (UserRoleFile userRoleFile:userRoleFileList) {
-//                userRoleFile.setFiles(filesService.getFileByFileId(userRoleFile.getFileId()));
-//                userRoleFile.setUserRole(userRoleService.getUserRoleById(userRoleFile.getUserRoleId()));
-//            }
-//            userRole.setUserRoleFileList(userRoleFileList);
-//        }
-//
+
+        System.err.println(resultUser);
         List<UserMenu> userMenus=menuService.getUserMenuByUid(resultUser.getId());
-        for (UserMenu userMenu:userMenus){
-            userMenu.setMenu(menuService.getMenuById(userMenu.getMid()));
-        }
-//
-        List<Roles> rolesList = RoleService.getRoleByGroupId(resultUser.getRoleGroupId());
+        List<Roles> rolesList = roleService.getRoleByGroupId(resultUser.getRoleGroupId());
         List<UserRoleFile> roleFile = userRoleFileService.getAllByUserId(resultUser.getId());
         HashMap<String, Object> map = new HashMap<>();
         map.put("user", resultUser);

@@ -8,9 +8,11 @@ import com.starvincci.dcs.pojo.*;
 import com.starvincci.dcs.pojo.menu.UserMenu;
 import com.starvincci.dcs.pojo.user.Department;
 import com.starvincci.dcs.pojo.user.Roles;
+import com.starvincci.dcs.pojo.user.UserRoleFile;
 import com.starvincci.dcs.pojo.user.Users;
 import com.starvincci.dcs.service.menu.MenuServiceImpl;
 import com.starvincci.dcs.service.user.RoleServiceImpl;
+import com.starvincci.dcs.service.user.UserRoleFileService;
 import com.starvincci.dcs.service.user.UserService;
 import com.starvincci.dcs.service.user.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,8 @@ public class UserController {
     private RoleServiceImpl roleService;
     @Resource
     private MenuServiceImpl menuService;
+    @Resource
+    private UserRoleFileService userRoleFileService;
 
     /**
      *
@@ -155,5 +159,50 @@ public class UserController {
     public RespBean getUserMenuByUid(@RequestParam("uid") Integer uid){
         return RespBean.ok("ok",menuService.getUserMenuByUid(uid));
     }
+
+    /**
+     * 待用  刷新用户权限
+     * @param uid
+     * @return
+     */
+    @GetMapping("/refreshUser")
+    public RespBean refreshUser(@RequestParam("userId") Integer uid){
+        Users user = userService.getUserById(uid);
+        HashMap<String,Object> map=new HashMap<>();
+        List<UserMenu> userMenus=menuService.getUserMenuByUid(user.getId());
+        List<Roles> rolesList = roleService.getRoleByGroupId(user.getRoleGroupId());
+        List<UserRoleFile> roleFile = userRoleFileService.getAllByUserId(user.getId());
+        map.put("user", user);
+        map.put("role", rolesList);
+        map.put("menu",userMenus);
+        map.put("roleFile",roleFile);
+        return RespBean.ok("ok",map);
+    }
+    @PostMapping("/userCenterUpdate")
+    public RespBean userCenterUpdate(@RequestBody String strs){
+        JSONObject jsonObject =JSON.parseObject(strs);
+        Integer userId=jsonObject.getInteger("id");
+        String account = jsonObject.getString("account");
+        String password = jsonObject.getString("password");
+        Integer departmentId = jsonObject.getInteger("departmentId");
+        String username = jsonObject.getString("username");
+        Integer isStatus = jsonObject.getInteger("isStatus");
+        Integer roleGroupId = jsonObject.getInteger("roleGroupId");
+        Users user=new Users();
+        user.setDepartmentId(departmentId);
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setUsername(username);
+        user.setIsStatus(isStatus);
+        user.setRoleGroupId(roleGroupId);
+        user.setId(userId);
+        int result=userService.updateUsers(user);
+        if (result==1){
+            return RespBean.ok("ok","修改成功");
+        }
+
+        return RespBean.error("error","修改失败");
+    }
+
 
 }

@@ -69,6 +69,12 @@ public interface RecordMapper {
      */
     int updateRecordOut(Record record);
 
+    /**
+     * 申请已通过，不能重复申请
+     * @param record
+     * @return
+     */
+    Record selectPass(Record record);
 
 
 }

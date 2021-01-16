@@ -23,4 +23,6 @@ public interface UserRoleFileService {
      * @return
      */
     int addUserRoleFile(UserRoleFile userRoleFile);
+    int delUserRoleFile(Integer id);
+    UserRoleFile getOnly(Integer id);
 }

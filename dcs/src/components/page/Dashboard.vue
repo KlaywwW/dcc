@@ -16,7 +16,7 @@
                             <span>逾期待办事项</span>《{{ todoTodayCount }}》
                             <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                         </div>
-                        <el-table :data="todoTodayList" style="width: 100%" height="250">
+                        <el-table :data="todoTodayList" style="width: 100%" height="260">
                             <el-table-column width="40" type="index" label="No"></el-table-column>
                             <el-table-column prop="directory.dirName" label="四大项目"></el-table-column>
                             <el-table-column prop="content" label="认证内容"></el-table-column>

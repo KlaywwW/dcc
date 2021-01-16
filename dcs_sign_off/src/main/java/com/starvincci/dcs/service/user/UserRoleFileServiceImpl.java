@@ -29,4 +29,14 @@ public class UserRoleFileServiceImpl implements UserRoleFileService {
     public int addUserRoleFile(UserRoleFile userRoleFile) {
         return userRoleFileMapper.addUserRoleFile(userRoleFile);
     }
+
+    @Override
+    public int delUserRoleFile(Integer id) {
+        return userRoleFileMapper.delUserRoleFile(id);
+    }
+
+    @Override
+    public UserRoleFile getOnly(Integer id) {
+        return userRoleFileMapper.getOnly(id);
+    }
 }

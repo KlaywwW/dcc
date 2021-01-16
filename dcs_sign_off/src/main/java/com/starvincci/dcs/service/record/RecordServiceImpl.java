@@ -60,4 +60,9 @@ public class RecordServiceImpl implements RecordService {
     public int updateRecordOut(Record record) {
         return recordMapper.updateRecordOut(record);
     }
+
+    @Override
+    public Record selectPass(Record record) {
+        return recordMapper.selectPass(record);
+    }
 }

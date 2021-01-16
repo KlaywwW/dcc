@@ -14,5 +14,5 @@ public interface RecordService {
     Record findRecordOnlyApply(Record record);
     Record findRecordOnlyPass(Record record);
     int updateRecordOut(Record record);
-
+    Record selectPass(Record record);
 }

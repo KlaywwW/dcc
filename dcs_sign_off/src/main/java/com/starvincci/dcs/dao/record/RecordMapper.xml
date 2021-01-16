@@ -34,6 +34,10 @@
     <select id="findRecordOnlyPass" resultType="com.starvincci.dcs.pojo.record.Record">
         select * from record where applyStatus=2 and fileId=#{fileId} and applyContent=#{applyContent}
     </select>
+    <select id="selectPass" resultType="com.starvincci.dcs.pojo.record.Record">
+        select * from record where applyStatus=2 and fileId=#{fileId} and applyContent=#{applyContent} and userId=#{userId}
+    </select>
+
     <update id="updateRecordOut" parameterType="com.starvincci.dcs.pojo.record.Record">
         UPDATE record set applyStatus=4 where id=#{id}
     </update>

@@ -16,7 +16,7 @@ public class Record {
     private String applyName;
     private String applyDate;
     private String applyContent;
-    private Integer applyStatus;//1.待通过，2.通过，3.未通过
+    private Integer applyStatus;//1.待通过，2.通过，3.未通过 4.失效
     private String applyPassDate;
     private String operator;
     private Integer inForce;

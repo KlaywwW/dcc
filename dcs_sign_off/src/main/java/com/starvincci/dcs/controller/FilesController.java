@@ -1,11 +1,14 @@
 package com.starvincci.dcs.controller;
 
+import com.starvincci.dcs.pojo.RespBean;
 import com.starvincci.dcs.pojo.files.Files;
 import com.starvincci.dcs.pojo.record.Log;
 import com.starvincci.dcs.pojo.record.Record;
+import com.starvincci.dcs.pojo.user.UserRoleFile;
 import com.starvincci.dcs.service.files.FilesServiceImpl;
 import com.starvincci.dcs.service.log.LogServiceImpl;
 import com.starvincci.dcs.service.record.RecordServiceImpl;
+import com.starvincci.dcs.service.user.UserRoleFileServiceImpl;
 import com.starvincci.dcs.service.user.UserServiceImpl;
 import com.starvincci.dcs.utils.FileUtil;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +36,8 @@ public class FilesController {
     private UserServiceImpl userService;
     @Resource
     private LogServiceImpl logService;
+    @Resource
+    private UserRoleFileServiceImpl userRoleFileService;
 
 
     private FileUtil fileUtil = new FileUtil();
@@ -315,5 +320,44 @@ public class FilesController {
         int resLog=logService.addLog(log);
     }
 
+    @GetMapping("/getFileRolesByUID")
+    private RespBean getFileRolesByUID(@RequestParam("userId") Integer uid){
+
+        return RespBean.ok("ok",userRoleFileService.getAllByUserId(uid));
+    }
+
+    @GetMapping("/delFileRole")
+    private RespBean delFileRole(@RequestParam("fileRoleId") Integer id){
+        String look = "look";
+        String download = "download";
+        String upload = "upload";
+        String update = "update";
+
+        UserRoleFile userRoleFile = userRoleFileService.getOnly(id);
+        Record record=new Record();
+        record.setFileId(userRoleFile.getFileId());
+        record.setUserId(userRoleFile.getUserId());
+        if (userRoleFile.getOperation().equals(look)){
+            record.setApplyContent("浏览");
+        }else if(userRoleFile.getOperation().equals(download)){
+            record.setApplyContent("下载");
+        }else if(userRoleFile.getOperation().equals(upload)){
+            record.setApplyContent("上传");
+        }else if(userRoleFile.getOperation().equals(update)){
+            record.setApplyContent("更新");
+        }
+
+        Record resRecord = recordService.selectPass(record);
+
+//       将申请记录设为过期
+        int res = recordService.updateRecordOut(resRecord);
+//      删除这条文件权限
+        int result=userRoleFileService.delUserRoleFile(id);
+        if (result==1&&res==1){
+            return RespBean.ok("ok","删除成功");
+        }
+
+        return RespBean.error("error","删除失败");
+    }
 
 }

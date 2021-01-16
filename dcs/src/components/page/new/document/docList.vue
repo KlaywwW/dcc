@@ -142,7 +142,7 @@ export default {
             dirId: '', //菜单id
             options: [],
             updateStatus: 0,
-            uploadStatus:0,
+            uploadStatus: 0,
             dialogVisible: false,
             uploadDialog: false,
             userData: {},
@@ -177,8 +177,13 @@ export default {
         this.upload = '上传文件到服务器';
         this.download = '下载';
         this.update = '更新';
-        this.userData = JSON.parse(sessionStorage.getItem('userData'));
-        
+        let userData = JSON.parse(sessionStorage.getItem('userData'));
+        this.$axios.get('/api/user/refreshUser?userId=' + userData.user.id).then((res) => {
+            sessionStorage.removeItem('userData');
+            sessionStorage.setItem('userData', JSON.stringify(res.data.obj));
+            console.log(JSON.parse(sessionStorage.getItem('userData')));
+            this.userData = JSON.parse(sessionStorage.getItem('userData'));
+        });
         let user = this.userData.user;
         this.$axios.get('api/file/getAllDep').then((res) => {
             that.options = res.data.data;
@@ -250,11 +255,12 @@ export default {
             this.$axios
                 .post('api/record/add', form)
                 .then((res) => {
+                    if (res.data.msg == 'ok') {
+                        this.$message.success(res.data.obj);
+                    } else {
+                        this.$message.error(res.data.obj);
+                    }
                     this.form.name = '';
-                    this.$message({
-                        message: res.data,
-                        type: 'success'
-                    });
                     this.dialogVisible = false;
                 })
                 .catch((err) => {});
@@ -376,7 +382,7 @@ export default {
                 this.form.fileId = row.filesId;
             } else {
                 // console.log(true);
-                this.updateStatus=1
+                this.updateStatus = 1;
             }
         },
         docHistory(row) {
@@ -395,8 +401,8 @@ export default {
             let that = this;
             let count = 0;
             for (var i = 0; i < that.userData.role.length; i++) {
-                if (that.userData.role[i].roleCode == "upload") {
-                    that.uploadStatus=1;
+                if (that.userData.role[i].roleCode == 'upload') {
+                    that.uploadStatus = 1;
                     count++;
                 }
             }

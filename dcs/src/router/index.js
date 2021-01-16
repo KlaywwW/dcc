@@ -21,14 +21,14 @@ export default new Router({
 					path: '/authority',
 					component: () => import('../components/page/new/user/authority.vue'),
 					meta: {
-						title: '权限查看'
+						title: '权限管理'
 					}
 				},
 				{
 					path: '/userList',
 					component: () => import('../components/page/new/user/userList.vue'),
 					meta: {
-						title: '用户列表'
+						title: '用户管理'
 					}
 				},
 				{
@@ -39,10 +39,10 @@ export default new Router({
 					}
 				},
 				{
-					path: '/docTemplate',
-					component: () => import('../components/page/new/document/docTemplate.vue'),
+					path: '/userCenter',
+					component: () => import('../components/page/new/user/userCenter.vue'),
 					meta: {
-						title: ''
+						title: '个人中心'
 					}
 				},
 
@@ -77,7 +77,7 @@ export default new Router({
                     path: '/reviewList',
 					component: () => import('../components/page/new/user/reviewList.vue'),
 					meta: {
-						title: '申请列表'
+						title: '申请管理'
 					}
                     
                 },

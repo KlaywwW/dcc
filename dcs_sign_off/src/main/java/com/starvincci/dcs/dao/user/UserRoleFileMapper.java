@@ -1,6 +1,7 @@
 package com.starvincci.dcs.dao.user;
 
 import com.starvincci.dcs.pojo.user.UserRoleFile;
+import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -34,4 +35,18 @@ public interface UserRoleFileMapper {
      * @return
      */
     List<UserRoleFile> getUserRoleFileByFileId(Integer fileId);
+
+    /**
+     * 删除一条权限
+     * @param id
+     * @return
+     */
+    int delUserRoleFile(Integer id);
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    UserRoleFile getOnly(Integer id);
 }

@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starvincci.dcs.dao.user.UserRoleFileMapper">
+    <delete id="delUserRoleFile">
+        delete from user_role_file where id=#{id}
+    </delete>
     <select id="getAllByUserId" resultMap="roleFile">
       SELECT * FROM user_role_file urf inner join files f on urf.fileId=f.filesId WHERE urf.userId=#{userId}
   </select>
@@ -36,6 +39,9 @@
 
     <select id="getUserRoleFileByFileId"  resultMap="roleFile">
          SELECT * FROM user_role_file urf inner join files f on urf.fileId=f.filesId  WHERE urf.fileId=#{fileId}
+    </select>
+    <select id="getOnly" resultType="com.starvincci.dcs.pojo.user.UserRoleFile">
+        select * FROM user_role_file WHERE id=#{id}
     </select>
 
 </mapper>

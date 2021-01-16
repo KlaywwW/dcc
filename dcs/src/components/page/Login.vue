@@ -52,7 +52,6 @@
 					.then(result => {
 						console.log(result);
 						sessionStorage.setItem("userData", JSON.stringify(result.data.data.principal.obj))
-						console.log(JSON.parse(sessionStorage.getItem("userData")));
 						this.$message.success(result.data.message);
 						this.$router.push("/dashboard");
 					})

@@ -162,10 +162,11 @@ export default {
                 .post('api/record/add', form)
                 .then((res) => {
                     this.form.name = '';
-                    this.$message({
-                        message: res.data,
-                        type: 'success'
-                    });
+                    if(res.data.msg=="ok"){
+                        this.$message.success(res.data.obj);
+                    }else{
+                        this.$message.error(res.data.obj)
+                    }
                     this.dialogVisible = false;
                 })
                 .catch((err) => {});

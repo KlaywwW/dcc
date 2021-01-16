@@ -31,12 +31,12 @@
                  inner join role_group rg on rg.groupId = u.roleGroupId
     </select>
 
-    <select id="findByAccount" resultMap="users" parameterType="com.starvincci.dcs.pojo.user.Users">
+    <select id="findByAccount" resultMap="users">
         SELECT *
         from users u
                  INNER JOIN department d on u.departmentId = d.id
                  inner join role_group rg on rg.groupId = u.roleGroupId
-        where account = #{account}
+        where u.account = #{account}
     </select>
 
     <resultMap id="users" type="com.starvincci.dcs.pojo.user.Users">
@@ -77,10 +77,12 @@
         <result column="departmentName" property="departmentName"></result>
     </resultMap>
 
-    <select id="getUserById" resultType="com.starvincci.dcs.pojo.user.Users">
+    <select id="getUserById" resultMap="users">
         SELECT *
-        FROM users
-        WHERE id = #{userId}
+        from users u
+                 INNER JOIN department d on u.departmentId = d.id
+                 inner join role_group rg on rg.groupId = u.roleGroupId
+        where u.id = #{userId}
     </select>
     <select id="getDepById" resultType="com.starvincci.dcs.pojo.user.Department">
         SELECT *

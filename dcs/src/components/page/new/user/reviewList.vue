@@ -1,13 +1,5 @@
 <template>
     <div>
-        <div v-show="selectShow">
-            <el-select v-model="status" placeholder="请选择审核状态" clearable>
-                <el-option label="待审核" value="1"></el-option>
-                <el-option label="已通过" value="2"></el-option>
-                <el-option label="未通过" value="3"></el-option>
-            </el-select>
-            <el-button type="primary" @click="select"> 查询 </el-button>
-        </div>
         <div v-show="adminShow">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号"></el-table-column>
@@ -30,24 +22,6 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div v-show="statusShow">
-            <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column label="申请人" prop="applyName"></el-table-column>
-                <el-table-column label="申请日期" prop="applyDate"></el-table-column>
-                <el-table-column label="申请状态">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.applyStatus == 1"><el-tag size="medium" type="warning">待审核</el-tag></div>
-                        <div v-if="scope.row.applyStatus == 2"><el-tag size="medium" type="success">通过</el-tag></div>
-                        <div v-if="scope.row.applyStatus == 3"><el-tag size="medium" type="danger">未通过</el-tag></div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="申请内容" prop="applyContent"></el-table-column>
-                <el-table-column label="申请文件名" prop="files.filesName"></el-table-column>
-                <el-table-column label="审核时间" prop="applyPassDate"></el-table-column>
-                <el-table-column label="操作人" prop="operator"></el-table-column>
-            </el-table>
-        </div>
     </div>
 </template>
 
@@ -57,11 +31,8 @@ export default {
     data() {
         return {
             userData: [],
-            tableData: [],
-            status: '',
-            selectShow: true,
-            statusShow: false,
-            adminShow: false
+            adminShow: false,
+            tableData:[]
         };
     },
     methods: {
@@ -72,8 +43,12 @@ export default {
             this.$axios
                 .post('api/record/updateRecord', row)
                 .then((res) => {
-                    this.$message.success(res.data);
-                    this.tableData.splice(index, 1);
+                    if(res.data.msg=="ok"){
+                        this.$message.success(res.data.obj);
+                    }else{
+                        this.$message.error(res.data.obj)
+                    }
+                    this.initRecord();
                 })
                 .catch((res) => {});
         },
@@ -83,8 +58,12 @@ export default {
             this.$axios
                 .post('api/record/updateRecord', row)
                 .then((res) => {
-                    this.$message.success(res.data);
-                    this.tableData.splice(index, 1);
+                    if(res.data.msg=="ok"){
+                        this.$message.success(res.data.obj);
+                    }else{
+                        this.$message.error(res.data.obj)
+                    }
+                    this.initRecord();
                 })
                 .catch((res) => {});
         },
@@ -108,17 +87,9 @@ export default {
                         }
                     });
             }
-        }
-    },
-    created() {
-        let that = this;
-        this.userData = JSON.parse(sessionStorage.getItem('userData'));
-        let user=this.userData.user;
-        if(user.roleGroup.groupName=="管理员" || user.roleGroup.groupName=="文件管理员"){
-            that.adminShow = true;
-            that.selectShow = false;
-            that.statusOneShow = false;
-            that.statusTwoShow = false;
+        },
+        initRecord() {
+            let that = this;
             this.$axios
                 .get('api/record/getRecordStatusOne')
                 .then((result) => {
@@ -128,6 +99,19 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 });
+        }
+    },
+
+    created() {
+        let that = this;
+        this.userData = JSON.parse(sessionStorage.getItem('userData'));
+        let user = this.userData.user;
+        if (user.roleGroup.groupName == '管理员' || user.roleGroup.groupName == '文件管理员') {
+            that.adminShow = true;
+            that.selectShow = false;
+            that.statusOneShow = false;
+            that.statusTwoShow = false;
+            that.initRecord();
         }
     }
 };
