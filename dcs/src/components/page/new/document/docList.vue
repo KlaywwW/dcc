@@ -475,25 +475,25 @@ export default {
             // console.log(this.$route);
             let index = this.$route.query.param;
             // 品管作业指导书
-            if (index == '1') {
+            if (index == '4') {
                 this.title = '品管作业指导书';
                 // 请求路径
-                this.dirId = 1;
+                this.dirId = 4;
             }
             // 流程作业指导书
-            if (index == '2') {
+            if (index == '1') {
                 this.title = '流程作业指导书';
-                this.dirId = 2;
+                this.dirId = 1;
             }
             // 工序标准作业票
-            if (index == '3') {
+            if (index == '2') {
                 this.title = '工序标准作业票';
-                this.dirId = 3;
+                this.dirId = 2;
             }
             // 设备操作规范
-            if (index == '4') {
+            if (index == '3') {
                 this.title = '设备操作规范';
-                this.dirId = 4;
+                this.dirId = 3;
             }
         },
         // 请求后台获取数据

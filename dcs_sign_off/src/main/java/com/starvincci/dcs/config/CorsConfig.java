@@ -51,33 +51,33 @@ public class CorsConfig extends WebMvcConfigurationSupport {
      */
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/dir1/pdf1/**").addResourceLocations("file:D://dcs/品管作业指导书/人资管理部/");
-        registry.addResourceHandler("/dir1/pdf2/**").addResourceLocations("file:D://dcs/品管作业指导书/财务部/");
-        registry.addResourceHandler("/dir1/pdf3/**").addResourceLocations("file:D://dcs/品管作业指导书/营业部/");
-        registry.addResourceHandler("/dir1/pdf4/**").addResourceLocations("file:D://dcs/品管作业指导书/生产部/");
-        registry.addResourceHandler("/dir1/pdf5/**").addResourceLocations("file:D://dcs/品管作业指导书/品保中心/");
-        registry.addResourceHandler("/dir1/pdf6/**").addResourceLocations("file:D://dcs/品管作业指导书/TPM/");
+        registry.addResourceHandler("/dir1/pdf1/**").addResourceLocations("file:D://dcs/流程作业指导书/人资管理部/");
+        registry.addResourceHandler("/dir1/pdf2/**").addResourceLocations("file:D://dcs/流程作业指导书/财务部/");
+        registry.addResourceHandler("/dir1/pdf3/**").addResourceLocations("file:D://dcs/流程作业指导书/营业部/");
+        registry.addResourceHandler("/dir1/pdf4/**").addResourceLocations("file:D://dcs/流程作业指导书/生产部/");
+        registry.addResourceHandler("/dir1/pdf5/**").addResourceLocations("file:D://dcs/流程作业指导书/品保中心/");
+        registry.addResourceHandler("/dir1/pdf6/**").addResourceLocations("file:D://dcs/流程作业指导书/TPM/");
 
-        registry.addResourceHandler("/dir2/pdf1/**").addResourceLocations("file:D://dcs/流程作业指导书/人资管理部/");
-        registry.addResourceHandler("/dir2/pdf2/**").addResourceLocations("file:D://dcs/流程作业指导书/财务部/");
-        registry.addResourceHandler("/dir2/pdf3/**").addResourceLocations("file:D://dcs/流程作业指导书/营业部/");
-        registry.addResourceHandler("/dir2/pdf4/**").addResourceLocations("file:D://dcs/流程作业指导书/生产部/");
-        registry.addResourceHandler("/dir2/pdf5/**").addResourceLocations("file:D://dcs/流程作业指导书/品保中心/");
-        registry.addResourceHandler("/dir2/pdf6/**").addResourceLocations("file:D://dcs/流程作业指导书/TPM/");
+        registry.addResourceHandler("/dir2/pdf1/**").addResourceLocations("file:D://dcs/工序标准作业票/人资管理部/");
+        registry.addResourceHandler("/dir2/pdf2/**").addResourceLocations("file:D://dcs/工序标准作业票/财务部/");
+        registry.addResourceHandler("/dir2/pdf3/**").addResourceLocations("file:D://dcs/工序标准作业票/营业部/");
+        registry.addResourceHandler("/dir2/pdf4/**").addResourceLocations("file:D://dcs/工序标准作业票/生产部/");
+        registry.addResourceHandler("/dir2/pdf5/**").addResourceLocations("file:D://dcs/工序标准作业票/品保中心/");
+        registry.addResourceHandler("/dir2/pdf6/**").addResourceLocations("file:D://dcs/工序标准作业票/TPM/");
 
-        registry.addResourceHandler("/dir3/pdf1/**").addResourceLocations("file:D://dcs/工序标准作业票/人资管理部/");
-        registry.addResourceHandler("/dir3/pdf2/**").addResourceLocations("file:D://dcs/工序标准作业票/财务部/");
-        registry.addResourceHandler("/dir3/pdf3/**").addResourceLocations("file:D://dcs/工序标准作业票/营业部/");
-        registry.addResourceHandler("/dir3/pdf4/**").addResourceLocations("file:D://dcs/工序标准作业票/生产部/");
-        registry.addResourceHandler("/dir3/pdf5/**").addResourceLocations("file:D://dcs/工序标准作业票/品保中心/");
-        registry.addResourceHandler("/dir3/pdf6/**").addResourceLocations("file:D://dcs/工序标准作业票/TPM/");
+        registry.addResourceHandler("/dir3/pdf1/**").addResourceLocations("file:D://dcs/设备操作规范/人资管理部/");
+        registry.addResourceHandler("/dir3/pdf2/**").addResourceLocations("file:D://dcs/设备操作规范/财务部/");
+        registry.addResourceHandler("/dir3/pdf3/**").addResourceLocations("file:D://dcs/设备操作规范/营业部/");
+        registry.addResourceHandler("/dir3/pdf4/**").addResourceLocations("file:D://dcs/设备操作规范/生产部/");
+        registry.addResourceHandler("/dir3/pdf5/**").addResourceLocations("file:D://dcs/设备操作规范/品保中心/");
+        registry.addResourceHandler("/dir3/pdf6/**").addResourceLocations("file:D://dcs/设备操作规范/TPM/");
 
-        registry.addResourceHandler("/dir4/pdf1/**").addResourceLocations("file:D://dcs/设备操作规范/人资管理部/");
-        registry.addResourceHandler("/dir4/pdf2/**").addResourceLocations("file:D://dcs/设备操作规范/财务部/");
-        registry.addResourceHandler("/dir4/pdf3/**").addResourceLocations("file:D://dcs/设备操作规范/营业部/");
-        registry.addResourceHandler("/dir4/pdf4/**").addResourceLocations("file:D://dcs/设备操作规范/生产部/");
-        registry.addResourceHandler("/dir4/pdf5/**").addResourceLocations("file:D://dcs/设备操作规范/品保中心/");
-        registry.addResourceHandler("/dir4/pdf6/**").addResourceLocations("file:D://dcs/设备操作规范/TPM/");
+        registry.addResourceHandler("/dir4/pdf1/**").addResourceLocations("file:D://dcs/品管作业指导书/人资管理部/");
+        registry.addResourceHandler("/dir4/pdf2/**").addResourceLocations("file:D://dcs/品管作业指导书/财务部/");
+        registry.addResourceHandler("/dir4/pdf3/**").addResourceLocations("file:D://dcs/品管作业指导书/营业部/");
+        registry.addResourceHandler("/dir4/pdf4/**").addResourceLocations("file:D://dcs/品管作业指导书/生产部/");
+        registry.addResourceHandler("/dir4/pdf5/**").addResourceLocations("file:D://dcs/品管作业指导书/品保中心/");
+        registry.addResourceHandler("/dir4/pdf6/**").addResourceLocations("file:D://dcs/品管作业指导书/TPM/");
         super.addResourceHandlers(registry);
     }
 }

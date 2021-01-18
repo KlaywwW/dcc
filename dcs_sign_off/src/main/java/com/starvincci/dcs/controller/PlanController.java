@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starvincci.dcs.pojo.Directory;
+import com.starvincci.dcs.pojo.RespBean;
 import com.starvincci.dcs.pojo.plan.Plan;
 import com.starvincci.dcs.pojo.plan.PlanAuth;
 import com.starvincci.dcs.pojo.plan.PlanCheck;
@@ -137,7 +138,8 @@ public class PlanController {
 
 
     /**
-     *添加认证计划
+     * 添加认证计划
+     *
      * @param strs
      * @return
      */
@@ -198,6 +200,62 @@ public class PlanController {
         }
 
         return "添加失败";
+    }
+
+    /**
+     * 修改计划
+     *
+     * @param strs
+     * @return
+     */
+    @PostMapping("/updatePlan")
+    public RespBean updatePlan(@RequestBody String strs) {
+        JSONObject jsonObject = JSON.parseObject(strs);
+        System.err.println(strs);
+        Integer id = jsonObject.getInteger("id");
+        String content = jsonObject.getString("content");
+        Integer dirId = jsonObject.getInteger("dirId");
+        String depPrincipal = jsonObject.getString("depPrincipal");
+        String planTime = jsonObject.getString("planTime");
+//        Plan samePlan = planService.getSamePlan(content);
+//        if (samePlan == null) {
+            Plan plan = new Plan();
+            plan.setContent(content);
+            plan.setDirId(dirId);
+            plan.setDepPrincipal(depPrincipal);
+            plan.setId(id);
+
+            int res1 = planService.updatePlanById(plan);
+            int res2 = planService.updatePlanGatherById(planTime, id);
+
+            if (res1 == 1 && res2 == 1) {
+                return RespBean.ok("ok", "修改成功");
+            }
+
+//        }
+//        else {
+//            return RespBean.error("error", "修改失败,存在相同认证内容计划");
+//        }
+
+        return RespBean.error("error", "修改失败");
+    }
+
+    /**
+     * 删除计划
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/delPlan")
+    public RespBean delPlan(@RequestParam("id") Integer id) {
+        Plan plan = planService.getPlanById(id);
+        PlanGather planGather = planService.getPlanGatherById(plan.getId());
+        int res1 = planService.delPlan(plan.getId());
+        int res2 = planService.delPlanGather(planGather.getId());
+        if (res1 == 1 && res2 == 1) {
+            return RespBean.ok("ok", "删除成功");
+        }
+        return RespBean.error("error", "删除失败");
     }
 
     /**
@@ -553,7 +611,7 @@ public class PlanController {
                             plan.setPlanGather(planGather);
                         }
 
-                    }else if (planGather.getPlanTime() != null && planGather.getActualTime() != null && planGather.getGatherPlanTime() == null) {
+                    } else if (planGather.getPlanTime() != null && planGather.getActualTime() != null && planGather.getGatherPlanTime() == null) {
                         if (planGather.getUserId().equals(userId)) {
                             gatherCount++;
                         }

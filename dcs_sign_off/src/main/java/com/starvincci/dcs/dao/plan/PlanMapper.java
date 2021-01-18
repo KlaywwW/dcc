@@ -5,6 +5,7 @@ import com.starvincci.dcs.pojo.plan.PlanAuth;
 import com.starvincci.dcs.pojo.plan.PlanCheck;
 import com.starvincci.dcs.pojo.plan.PlanGather;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -146,5 +147,38 @@ public interface PlanMapper {
      */
     List<Plan> getPlanFinish(Integer dirId);
 
+    /**
+     * 获取计划信息根据主键id
+     * @param id
+     * @return
+     */
+    Plan getPlanById(Integer id);
 
+    /**
+     * 删除计划根据主键id
+     * @param id
+     * @return
+     */
+    int delPlan(Integer id);
+
+    /**
+     * 删除资料收集计划根据主键id
+     * @param id
+     * @return
+     */
+    int delPlanGather(Integer id);
+
+    /**
+     * 根据id修改计划
+     * @param plan
+     * @return
+     */
+    int updatePlanById(Plan plan);
+
+    /**
+     * 根据id修改资料收集计划
+     * @param id
+     * @return
+     */
+    int updatePlanGatherById(@Param("planTime")String planTime,@Param("id")Integer id);
 }

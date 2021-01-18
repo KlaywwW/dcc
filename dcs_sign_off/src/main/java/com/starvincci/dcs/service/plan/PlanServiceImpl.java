@@ -110,4 +110,29 @@ public class PlanServiceImpl implements PlanService {
     public List<Plan> getPlanFinish(Integer dirId) {
         return planMapper.getPlanFinish(dirId);
     }
+
+    @Override
+    public Plan getPlanById(Integer id) {
+        return planMapper.getPlanById(id);
+    }
+
+    @Override
+    public int delPlan(Integer id) {
+        return planMapper.delPlan(id);
+    }
+
+    @Override
+    public int delPlanGather(Integer id) {
+        return planMapper.delPlanGather(id);
+    }
+
+    @Override
+    public int updatePlanById(Plan plan) {
+        return planMapper.updatePlanById(plan);
+    }
+
+    @Override
+    public int updatePlanGatherById(String planTime, Integer id) {
+        return planMapper.updatePlanGatherById(planTime,id);
+    }
 }

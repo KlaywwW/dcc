@@ -68,6 +68,18 @@
         update plan_check SET checkPlanTime=#{checkPlanTime},checkActualTime=checkActualTime,userId=#{userId}
         where planId=#{planId}
     </update>
+    <update id="updatePlanGatherById" >
+        update plan_gather set planTime=#{planTime} where planId=#{id}
+    </update>
+    <update id="updatePlanById" parameterType="com.starvincci.dcs.pojo.plan.Plan">
+        update plan set content=#{content},dirId=#{dirId},depPrincipal=#{depPrincipal} where id=#{id}
+    </update>
+    <delete id="delPlan">
+        delete from plan where id=#{id}
+    </delete>
+    <delete id="delPlanGather">
+        delete from plan_gather where id=#{id}
+    </delete>
 
 
     <select id="getPlanByDirId" resultType="com.starvincci.dcs.pojo.plan.Plan">
@@ -91,6 +103,9 @@
     </select>
     <select id="getPlanFinish" resultType="com.starvincci.dcs.pojo.plan.Plan">
         SELECT * FROM plan WHERE isFinish=2 AND dirId=#{dirId}
+    </select>
+    <select id="getPlanById" resultType="com.starvincci.dcs.pojo.plan.Plan">
+        select * from plan where id=#{id}
     </select>
 
 

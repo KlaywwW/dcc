@@ -139,11 +139,23 @@ l<template>
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                             <el-row>
-                                                <el-col :span="24"
-                                                    ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                <el-col :span="24">
+                                                    <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
                                                         >设定计划送审时间</el-button
-                                                    ></el-col
-                                                >
+                                                    >
+                                                </el-col>
+                                            </el-row>
+                                            <el-row v-if="scope.row.planGather.actualTime == null">
+                                                <el-col :span="24">
+                                                    <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                        >修改计划</el-button
+                                                    >
+                                                </el-col>
+                                                <el-col :span="24">
+                                                    <el-button type="warning" plain size="mini" @click="delPlan(scope.row)"
+                                                        >删除计划</el-button
+                                                    >
+                                                </el-col>
                                             </el-row>
                                         </div>
                                         <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
@@ -257,11 +269,21 @@ l<template>
                                 <template slot-scope="scope">
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
-                                            <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
                                                     >设定计划送审时间</el-button
-                                                ></el-col
-                                            >
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planGather.actualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                    >修改计划</el-button
+                                                >
+                                            </el-col>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="delPlan(scope.row)">删除计划</el-button>
+                                            </el-col>
                                         </el-row>
                                     </div>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
@@ -372,11 +394,21 @@ l<template>
                                 <template slot-scope="scope">
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
-                                            <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
                                                     >设定计划送审时间</el-button
-                                                ></el-col
-                                            >
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planGather.actualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                    >修改计划</el-button
+                                                >
+                                            </el-col>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="delPlan(scope.row)">删除计划</el-button>
+                                            </el-col>
                                         </el-row>
                                     </div>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
@@ -487,11 +519,21 @@ l<template>
                                 <template slot-scope="scope">
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
-                                            <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
                                                     >设定计划送审时间</el-button
-                                                ></el-col
-                                            >
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planGather.actualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                    >修改计划</el-button
+                                                >
+                                            </el-col>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="delPlan(scope.row)">删除计划</el-button>
+                                            </el-col>
                                         </el-row>
                                     </div>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
@@ -602,11 +644,21 @@ l<template>
                                 <template slot-scope="scope">
                                     <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
                                         <el-row>
-                                            <el-col :span="24"
-                                                ><el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
                                                     >设定计划送审时间</el-button
-                                                ></el-col
-                                            >
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planGather.actualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                    >修改计划</el-button
+                                                >
+                                            </el-col>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="delPlan(scope.row)">删除计划</el-button>
+                                            </el-col>
                                         </el-row>
                                     </div>
                                     <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
@@ -776,7 +828,6 @@ l<template>
                     <el-button type="primary" @click="gatherSubmit">提 交</el-button>
                 </span>
             </el-dialog>
-
             <!-- 添加计划 -->
             <el-dialog title="添加计划" :visible.sync="planShow" width="40%">
                 <div>
@@ -809,6 +860,37 @@ l<template>
                     <el-button type="primary" @click="submit">提 交</el-button>
                 </span>
             </el-dialog>
+            <el-dialog title="修改计划" :visible.sync="updatePlanShow" width="40%">
+                <div>
+                    <el-form ref="form" :model="updatePlanForm" label-width="140px">
+                        <el-form-item label="认证项目">
+                            <el-input v-model="updatePlanForm.content"></el-input>
+                        </el-form-item>
+                        <el-form-item label="四大标准">
+                            <el-select v-model="updatePlanForm.dirId" filterable placeholder="请选择">
+                                <el-option v-for="item in directory" :key="item.id" :label="item.dirName" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="被收集单位负责人">
+                            <el-input v-model="updatePlanForm.depPrincipal"></el-input>
+                        </el-form-item>
+                        <el-form-item label="计划完成时间">
+                            <el-date-picker
+                                v-model="updatePlanForm.planTime"
+                                type="datetime"
+                                placeholder="选择日期时间"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                :picker-options="expireTimeOption"
+                            >
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="updatePlanCancel">取 消</el-button>
+                    <el-button type="primary" @click="updatePlanSubmit">提 交</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -817,6 +899,14 @@ l<template>
 export default {
     data() {
         return {
+            updatePlanShow: false,
+            updatePlanForm: {
+                id: '',
+                content: '',
+                dirId: '',
+                depPrincipal: '',
+                planTime: ''
+            },
             numFirst: 0,
             numSecond: 0,
             numThird: 0,
@@ -972,14 +1062,14 @@ export default {
                             that.$message('无权限操作');
                             return true;
                         }
-                        let count = 0;
-                        for (let i = 0; i < role.length; i++) {
-                            let roleCode = role[i].roleCode;
-                            if (roleCode == 'dir1' && row.dirId == 1) {
-                                count++;
-                            }
+                        let userCount = 0;
+                        if (this.userData.user.roleGroupId == 1) {
+                            userCount = 1;
                         }
-                        if (count <= 0) {
+                        if (row.planGather.userId == that.userData.user.id) {
+                            userCount++;
+                        }
+                        if (userCount <= 0) {
                             that.$message('无权限操作');
                         } else {
                             that.sure(row.id, that.userData.user.id, index);
@@ -1007,9 +1097,6 @@ export default {
                         message: '已取消'
                     });
                 });
-
-            // console.log(row);
-            // console.log(this.userData);
         },
         // 确认完成 请求后台方法
         sure(id, userId, index) {
@@ -1019,9 +1106,7 @@ export default {
                 .then((res) => {
                     if (that.tabIndex != 0) {
                         that.initDataDir(that.tabIndex);
-                        return true;
                     }
-                    that.initData();
                 })
                 .catch((res) => {});
         },
@@ -1071,6 +1156,78 @@ export default {
                 })
                 .catch((error) => {});
         },
+        // 删除计划
+        delPlan(row) {
+            let that = this;
+            console.log(row);
+            let userCount = 0;
+            if (this.userData.user.roleGroupId == 1) {
+                userCount = 1;
+            }
+            if (row.planGather.userId == that.userData.user.id) {
+                userCount++;
+            }
+            if (userCount <= 0) {
+                that.$message('无权限操作');
+            } else {
+                this.$confirm('是否确认完成?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                    .then(() => {
+                        that.$axios.get('/api/plan/delPlan?id=' + row.id).then((res) => {
+                            if (res.data.msg == 'ok') {
+                                that.$message.success(res.data.obj);
+                                that.initData();
+                                if (that.tabIndex != 0) {
+                                    that.initDataDir(that.tabIndex);
+                                    return true;
+                                }
+                            } else {
+                                that.$message.error(res.data.obj);
+                            }
+                        });
+                    })
+                    .catch(() => {
+                        that.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
+            }
+        },
+        updatePlanCancel() {
+            this.updatePlanForm = {
+                id: '',
+                content: '',
+                dirId: '',
+                depPrincipal: '',
+                planTime: ''
+            };
+            this.updatePlanShow = false;
+        },
+        updatePlanSubmit() {
+            let that = this;
+            this.$axios.post('/api/plan/updatePlan', this.updatePlanForm).then((res) => {
+                if (res.data.msg == 'ok') {
+                    this.$message.success(res.data.obj);
+                } else {
+                    this.$message.error(res.data.obj);
+                }
+                if (that.tabIndex != 0) {
+                    that.initDataDir(that.tabIndex);
+                }
+                that.updatePlanShow = false;
+                that.updatePlanForm = {
+                    id: '',
+                    content: '',
+                    dirId: '',
+                    depPrincipal: '',
+                    planTime: ''
+                };
+            });
+        },
         // 修改计划时间弹框的所需三个方法
         updatePlan(row, index) {
             let that = this;
@@ -1090,8 +1247,26 @@ export default {
                     planCheckUsers.push(row.planCheck.users[key].id);
                 }
             }
+            if (index == 1) {
+                let userCount = 0;
+                if (this.userData.user.roleGroupId == 1) {
+                    userCount = 1;
+                }
+                if (row.planGather.userId == that.userData.user.id) {
+                    userCount++;
+                }
+                if (userCount <= 0) {
+                    that.$message('无权限操作');
+                } else {
+                    that.updatePlanForm.id = row.id;
+                    that.updatePlanForm.content = row.content;
+                    that.updatePlanForm.dirId = row.dirId;
+                    that.updatePlanForm.depPrincipal = row.depPrincipal;
+                    that.updatePlanForm.planTime = row.planGather.planTime;
 
-            if (index == 2) {
+                    that.updatePlanShow = true;
+                }
+            } else if (index == 2) {
                 if (this.userData.user.roleGroupId != 1) {
                     for (let i = 0; i < row.planAuth.users.length; i++) {
                         if (row.planAuth.users[i].id == this.userData.user.id) {
@@ -1127,7 +1302,6 @@ export default {
                             count++;
                         }
                     }
-                    
 
                     if (count > 0) {
                         that.formUpdate.checkUsers = planCheckUsers;
@@ -1172,21 +1346,7 @@ export default {
                 });
                 return true;
             }
-            if (index == 1) {
-                // console.log('修改收集资料计划时间');
-                // this.$axios
-                //     .post('api/plan/updatePlanGather', form)
-                //     .then((res) => {
-                //         this.$message({
-                //             message: res.data,
-                //             type: 'success'
-                //         });
-                //         that.timeUpdateShow = false;
-                //         that.initData();
-                //         that.initForm();
-                //     })
-                //     .catch((err) => {});
-            } else if (index == 2) {
+            if (index == 2) {
                 console.log('修改认证计划时间');
                 this.$axios
                     .post('api/plan/updatePlanAuth', form)

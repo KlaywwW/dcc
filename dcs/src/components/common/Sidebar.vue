@@ -47,7 +47,7 @@ export default {
             let user = sessionStorage.getItem('userData');
             if (user != null) {
                 console.log(index);
-                if (index == '1') {
+                if (index == '4') {
                     console.log(this.$router.options);
                     this.$router.options.routes[1].children[2].meta.title = '品管作业指导书';
                     this.$router.push({
@@ -56,7 +56,7 @@ export default {
                             param: index
                         }
                     });
-                } else if (index == '2') {
+                } else if (index == '1') {
                     this.$router.options.routes[1].children[2].meta.title = '流程作业指导书';
                     this.$router.push({
                         path: '/docList',
@@ -66,7 +66,7 @@ export default {
                     });
                 }
                 // 财务判断
-                else if (index == '3') {
+                else if (index == '2') {
                     // console.log(this.$store.state.doc);
                     this.$router.options.routes[1].children[2].meta.title = '工序标准作业票';
                     this.$router.push({
@@ -75,7 +75,7 @@ export default {
                             param: index
                         }
                     });
-                } else if (index == '4') {
+                } else if (index == '3') {
                     this.$router.options.routes[1].children[2].meta.title = '设备操作规范';
                     this.$router.push({
                         path: '/docList',
@@ -130,26 +130,25 @@ export default {
                         }
                     ]
                 },
-
                 {
                     icon: 'el-icon-lx-sort',
                     index: '1',
-                    title: '品管作业指导书'
-                },
-                {
-                    icon: 'el-icon-lx-sort',
-                    index: '2',
                     title: '流程作业指导书'
                 },
                 {
                     icon: 'el-icon-lx-sort',
-                    index: '3',
+                    index: '2',
                     title: '工序标准作业票'
                 },
                 {
                     icon: 'el-icon-lx-sort',
-                    index: '4',
+                    index: '3',
                     title: '设备操作规范'
+                },
+                {
+                    icon: 'el-icon-lx-sort',
+                    index: '4',
+                    title: '品管作业指导书'
                 }
             ]
         };

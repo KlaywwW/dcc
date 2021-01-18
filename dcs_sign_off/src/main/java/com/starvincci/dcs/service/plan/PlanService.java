@@ -4,6 +4,7 @@ import com.starvincci.dcs.pojo.plan.Plan;
 import com.starvincci.dcs.pojo.plan.PlanAuth;
 import com.starvincci.dcs.pojo.plan.PlanCheck;
 import com.starvincci.dcs.pojo.plan.PlanGather;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,4 +42,9 @@ public interface PlanService {
     int updatePlanCheckWithUser(PlanCheck planCheck);
 
     List<Plan> getPlanFinish(Integer dirId);
+    Plan getPlanById(Integer id);
+    int delPlan(Integer id);
+    int delPlanGather(Integer id);
+    int updatePlanById(Plan plan);
+    int updatePlanGatherById(@Param("planTime")String planTime, @Param("id")Integer id);
 }
