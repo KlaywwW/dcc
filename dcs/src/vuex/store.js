@@ -8,7 +8,8 @@ let state={
 	userData:window.sessionStorage.getItem("userData"),
 	collapse:false
 }
+let plan=null;
 
 export default new Vuex.Store({
-	state
+	state,plan
 })

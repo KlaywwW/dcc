@@ -16,7 +16,7 @@
                             <span>逾期待办事项</span>《{{ todoTodayCount }}》
                             <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                         </div>
-                        <el-table :data="todoTodayList" style="width: 100%" height="260">
+                        <el-table :data="todoTodayList" style="width: 100%" height="260" @current-change="handleCurrentChange">
                             <el-table-column width="40" type="index" label="No"></el-table-column>
                             <el-table-column prop="directory.dirName" label="四大项目"></el-table-column>
                             <el-table-column prop="content" label="认证内容"></el-table-column>
@@ -272,7 +272,7 @@ export default {
                 this.$notify({
                     // title: '今日待办事项',
                     dangerouslyUseHTMLString: true,
-                    message: '逾期待办事项数量    ' + '<strong style="color:red;font-size:20px">' + res.data.count + '</strong>',
+                    message: '逾期待办事项数量   ' + '<strong style="color:red;font-size:20px">' + res.data.count + '</strong>',
                     duration: 50000,
                     type: 'warning'
                 });
@@ -281,6 +281,11 @@ export default {
         });
     },
     methods: {
+        handleCurrentChange(){
+            this.$store.plan='seventh';
+            console.log('to process');
+            this.$router.push('/process');
+        },
         changeDate() {
             const now = new Date().getTime();
             this.data.forEach((item, index) => {

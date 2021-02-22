@@ -104,6 +104,14 @@ export default new Router({
 						title: '认证计划'
 					}
                     
+                },
+                {
+                    path: '/demo',
+					component: () => import('../components/page/demo.vue'),
+					meta: {
+						title: '测试'
+					}
+                    
                 }
 			]
 		},

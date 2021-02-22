@@ -747,6 +747,131 @@ l<template>
                         </el-table>
                     </div>
                 </el-tab-pane>
+                <el-tab-pane label="逾期未完成计划" name="seventh">
+                    <div>
+                        <el-table
+                            :data="todoTodayList"
+                            style="width: 100%"
+                            border
+                            :cell-style="cellStyleTab"
+                            :header-cell-style="tabTableHeaderColor"
+                        >
+                            <el-table-column prop="directory.dirName" label="四大标准"></el-table-column>
+                            <el-table-column prop="content" label="认证项目"></el-table-column>
+                            <el-table-column label="收集资料">
+                                <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column prop="planGather.planTime" label="计划完成时间" sortable></el-table-column>
+                                <el-table-column width="100" label="实际完成时间">
+                                    <template slot-scope="scope">
+                                        <div v-if="scope.row.planGather != null">
+                                            {{ scope.row.planGather.actualTime }}
+                                            <div v-if="scope.row.planGather.actualTime == null && scope.row.planGather.planTime != null">
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 1)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column prop="users.username" label="收集资料组长"></el-table-column>
+                                <el-table-column prop="planGather.gatherPlanTime" label="计划送审时间" sortable></el-table-column>
+                            </el-table-column>
+                            <el-table-column label="审核认证">
+                                <el-table-column prop="planAuth.authPlanTime" label="计划时间" sortable></el-table-column>
+                                <el-table-column label="认证人员" :filter-method="filterPlanAuth" :filters="filterData">
+                                    <template slot-scope="scope">
+                                        <div v-if="scope.row.planAuth != null">
+                                            <div v-for="(item, i) in scope.row.planAuth.users" :key="i">
+                                                {{ item.username }}
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="完成时间" width="100">
+                                    <template slot-scope="scope">
+                                        <div v-if="scope.row.planAuth != null">
+                                            {{ scope.row.planAuth.authActualTime }}
+                                            <div
+                                                v-if="scope.row.planAuth.authActualTime == null && scope.row.planAuth.authPlanTime != null"
+                                            >
+                                                <el-button type="primary" plain size="mini" @click="verify(scope.row, 2)"
+                                                    >确认完成</el-button
+                                                >
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="稽核">
+                                <el-table-column prop="planCheck.checkPlanTime" label="计划时间" sortable></el-table-column>
+                                <el-table-column label="稽核人员" :filter-method="filterPlanCheck" :filters="filterData">
+                                    <template slot-scope="scope">
+                                        <div v-if="scope.row.planCheck != null">
+                                            <div v-for="(item, i) in scope.row.planCheck.users" :key="i">
+                                                {{ item.username }}
+                                            </div>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="planCheck.checkActualTime" label="完成时间"></el-table-column>
+                            </el-table-column>
+                            <el-table-column label="操作" fixed="right" width="150">
+                                <template slot-scope="scope">
+                                    <div v-if="scope.row.planAuth == null || scope.row.planAuth.authPlanTime == null">
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="settingPlan(scope.row)"
+                                                    >设定计划送审时间</el-button
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planGather.actualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 1)"
+                                                    >修改计划</el-button
+                                                >
+                                            </el-col>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="delPlan(scope.row)">删除计划</el-button>
+                                            </el-col>
+                                        </el-row>
+                                    </div>
+                                    <div v-else-if="scope.row.planCheck == null || scope.row.planCheck.checkPlanTime == null">
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="addAuthPlan(scope.row)"
+                                                    >设定稽核计划时间</el-button
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                        <el-row v-if="scope.row.planAuth.authActualTime == null">
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 2)"
+                                                    >修改认证计划时间</el-button
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                    </div>
+                                    <div v-else-if="scope.row.planCheck.checkActualTime == null">
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-button type="primary" plain size="mini" @click="pass(scope.row)">稽核通过</el-button>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-button type="warning" plain size="mini" @click="updatePlan(scope.row, 3)"
+                                                    >修改稽核计划时间</el-button
+                                                >
+                                            </el-col>
+                                        </el-row>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
         <div>
@@ -960,11 +1085,20 @@ export default {
             tabTableData: [],
             filterData: [],
             finishTableData: [],
-            sort: ['descending']
+            sort: ['descending'],
+            todoTodayList: []
         };
     },
     created() {
         let that = this;
+        console.log(this.$store.plan);
+        if (this.$store.plan == null) {
+            this.activeName = 'first';
+        } else {
+            this.activeName = this.$store.plan;
+            that.initUserPlan(JSON.parse(sessionStorage.getItem('userData')).user.id);
+        }
+
         this.userData = JSON.parse(sessionStorage.getItem('userData'));
         this.initData();
         this.initNum(1);
@@ -1043,6 +1177,8 @@ export default {
                     that.finishTableData = res.data.data;
                     that.numSixth = res.data.num;
                 });
+            } else if (this.tabIndex == 6) {
+                that.initUserPlan(that.userData.user.id);
             } else {
                 this.initDataDir(this.tabIndex);
             }
@@ -1092,10 +1228,10 @@ export default {
                     }
                 })
                 .catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    });
+                    // this.$message({
+                    //     type: 'info',
+                    //     message: '已取消'
+                    // });
                 });
         },
         // 确认完成 请求后台方法
@@ -1104,8 +1240,15 @@ export default {
             that.$axios
                 .get('api/plan/verify?planId=' + id + '&userId=' + userId + '&index=' + index)
                 .then((res) => {
-                    if (that.tabIndex != 0) {
+                    if (that.tabIndex != 0 && that.tabIndex != 6) {
                         that.initDataDir(that.tabIndex);
+                        return true;
+                    } else if (that.tabIndex == 6) {
+                        that.initUserPlan(that.userData.user.id);
+                        return true;
+                    } else {
+                        that.initData();
+                        return true;
                     }
                 })
                 .catch((res) => {});
@@ -1148,11 +1291,15 @@ export default {
                         message: res.data,
                         type: 'success'
                     });
-                    if (that.tabIndex != 0) {
+                    if (that.tabIndex != 0 && that.tabIndex != 6) {
                         that.initDataDir(that.tabIndex);
                         return true;
+                    } else if (that.tabIndex == 6) {
+                        that.initUserPlan(that.userData.user.id);
+                        return true;
+                    } else {
+                        that.initData();
                     }
-                    that.initData();
                 })
                 .catch((error) => {});
         },
@@ -1180,10 +1327,11 @@ export default {
                             if (res.data.msg == 'ok') {
                                 that.$message.success(res.data.obj);
                                 that.initData();
-                                if (that.tabIndex != 0) {
+                                if (that.tabIndex != 0 && that.tabIndex != 6) {
                                     that.initDataDir(that.tabIndex);
                                     return true;
                                 }
+                                that.initUserPlan(that.userData.user.id);
                             } else {
                                 that.$message.error(res.data.obj);
                             }
@@ -1215,9 +1363,11 @@ export default {
                 } else {
                     this.$message.error(res.data.obj);
                 }
-                if (that.tabIndex != 0) {
+                if (that.tabIndex != 0 && that.tabIndex != 6) {
                     that.initDataDir(that.tabIndex);
+                    return true;
                 }
+                that.initUserPlan(that.userData.user.id);
                 that.updatePlanShow = false;
                 that.updatePlanForm = {
                     id: '',
@@ -1357,11 +1507,12 @@ export default {
                         });
                         that.timeUpdateShow = false;
                         that.initForm();
-                        if (that.tabIndex != 0) {
+                        if (that.tabIndex != 0 && that.tabIndex != 6) {
                             that.initDataDir(that.tabIndex);
                             return true;
                         }
                         that.initData();
+                        that.initUserPlan(that.userData.user.id);
                     })
                     .catch((err) => {});
             } else if (index == 3) {
@@ -1375,10 +1526,11 @@ export default {
                         });
                         that.timeUpdateShow = false;
                         that.initForm();
-                        if (that.tabIndex != 0) {
+                        if (that.tabIndex != 0 && that.tabIndex != 6) {
                             that.initDataDir(that.tabIndex);
                             return true;
                         }
+                        that.initUserPlan(that.userData.user.id);
                         that.initData();
                     })
                     .catch((err) => {});
@@ -1459,15 +1611,13 @@ export default {
                         type: 'success'
                     });
                     that.timeChoseShow = false;
-                    if (that.tabIndex != 0) {
-                        that.initDataDir(that.tabIndex);
-                    }
                     that.initForm();
-                    if (that.tabIndex != 0) {
+                    that.initData();
+                    if (that.tabIndex != 0 && that.tabIndex != 6) {
                         that.initDataDir(that.tabIndex);
                         return true;
                     }
-                    that.initData();
+                    that.initUserPlan(that.userData.user.id);
                 })
                 .catch((err) => {});
         },
@@ -1604,11 +1754,12 @@ export default {
                     });
                     that.planGatherShow = false;
                     that.initData();
-                    if (that.tabIndex != '' || that.tabIndex != 0) {
+                    that.initForm();
+                    if (that.tabIndex != 0 && that.tabIndex != 6) {
                         that.initDataDir(that.tabIndex);
                         return true;
                     }
-                    that.initForm();
+                    that.initUserPlan(that.userData.user.id);
                 })
                 .catch((err) => {});
         },
@@ -1653,6 +1804,15 @@ export default {
                     that.numFifth = res.data.num;
                 }
             });
+        },
+        initUserPlan(userId) {
+            let that = this;
+            this.$axios.get('api/plan/nowPlan?userId=' + userId).then((res) => {
+                that.todoTodayList = res.data.data;
+            });
+            // this.$axios.get('api/plan/getPlanByUser?userId=' + userId).then((res) => {
+            //     that.todoTodayList=res.data.data;
+            // });
         },
         // 将表单的值重置
         initForm() {

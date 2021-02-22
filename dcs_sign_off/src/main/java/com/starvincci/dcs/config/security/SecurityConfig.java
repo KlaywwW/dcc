@@ -96,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //不需要验证的路径
                 .antMatchers("/druid/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated() //必须授权才能范围
                 .and()
                 .formLogin() //使用自带的登录

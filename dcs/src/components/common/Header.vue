@@ -5,7 +5,7 @@
             <i v-if="!this.$store.state.collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo">文控中心</div>
+        <div class="logo">文控系统</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->

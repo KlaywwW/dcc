@@ -20,7 +20,6 @@ public class FileUtil {
      */
 
     public boolean upload(List<MultipartFile> files, String filePath,FilesServiceImpl filesService) {
-//        List<MultipartFile> files = (MultipartHttpServletRequest)request.getFiles("file");
 
         if(files.isEmpty()){
             return false;
@@ -32,7 +31,6 @@ public class FileUtil {
             String fileName = file.getOriginalFilename();
             int size = (int) file.getSize();
             System.out.println(fileName + "-->" + size);
-//            Files fileExist=filesService.fileIsExist(fileName);
             System.out.println(filesService.fileIsExist(fileName));
             if (filesService.fileIsExist(fileName)!=null){
                 System.err.println("已存在相同名称文件");
@@ -63,13 +61,11 @@ public class FileUtil {
         File file = new File(filePath);
         //相应头的处理
         //清空response中的输出流
-//        response.reset();
-        //设置文件大小
+        /*设置文件大小*/
         response.setContentLength((int) file.length());
         //设置Content-Type头
         response.setContentType("application/octet-stream;charset=utf-8");
         //设置Content-Disposition头 以附件形式解析
-//        String encodedFilename = processFileName(request, fileName);
         System.err.println(fileName);
         String encodedFilename = processFileName(request, fileName);
         response.addHeader("fileName",encodedFilename);

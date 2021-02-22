@@ -11,7 +11,8 @@ module.exports = {
         disableHostCheck: true,
 	    proxy: {
 	        '/api':{
-				target:'http://localhost:8099',
+                // target:'http://192.168.123.51:8099',
+                target:'http://192.168.123.86:8099',
 	            changeOrigin:true,
 	            pathRewrite:{
 	                '^/api':''
