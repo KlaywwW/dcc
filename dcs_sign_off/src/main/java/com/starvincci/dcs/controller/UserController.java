@@ -69,7 +69,6 @@ public class UserController {
 
     @PostMapping("/updateUser/{id}")
     public RespBean updateUser(@PathVariable Integer id, @RequestBody String data) {
-        System.out.println(data);
         JSONObject jsonObject = JSON.parseObject(data);
         // 修改用户
         Users user = new Users();
@@ -96,7 +95,6 @@ public class UserController {
     @PostMapping("/addUser")
     private String addUser(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
-        System.out.println(strs);
         Users users = new Users();
         users.setAccount(jsonObject.getString("account"));
         users.setUsername(jsonObject.getString("username"));

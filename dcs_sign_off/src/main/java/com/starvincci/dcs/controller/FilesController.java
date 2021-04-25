@@ -42,6 +42,15 @@ public class FilesController {
 
     private FileUtil fileUtil = new FileUtil();
 
+    /**
+     * 上传文件
+     * @param listFile 文件列表
+     * @param userName 上传人
+     * @param departmentId 部门
+     * @param dirId 认证项目
+     * @param userId 上传文件用户操作id
+     * @return
+     */
     @PostMapping("/upload")
     public HashMap<String, Object> uploadFiles(@RequestParam("files") List<MultipartFile> listFile,
                                                @RequestParam("userName") String userName,
@@ -69,7 +78,7 @@ public class FilesController {
             files.setVersionNo(1);
             files.setDirId(dirId);
             files.setUserId(userId);
-            System.out.println(files.toString());
+//            保存文件信息
             int res = filesService.addFile(files);
             if (res > 0) {
 
@@ -88,6 +97,12 @@ public class FilesController {
         return hashMap;
     }
 
+    /**
+     * 显示文件列表
+     * @param departmentId
+     * @param dirId
+     * @return
+     */
     @GetMapping("/show")
     public HashMap<String, Object> show(@RequestParam("departmentId") Integer departmentId,
                                         @RequestParam("dirId") Integer dirId) {
@@ -119,6 +134,7 @@ public class FilesController {
         map.put("data", filesResult);
         return map;
     }
+//    根据认证项目id查询文件
     @GetMapping("/showAllByDir")
     public HashMap<String, Object> showAllByDir(@RequestParam("dirId") Integer dirId) {
         HashMap<String, Object> map = new HashMap<>();
@@ -149,6 +165,11 @@ public class FilesController {
         map.put("data", filesResult);
         return map;
     }
+
+    /**
+     * 查询所有部门
+     * @return
+     */
     @GetMapping("/getAllDep")
     public HashMap<String, Object> getAllDep(){
         HashMap<String, Object> map = new HashMap<>();
@@ -157,6 +178,10 @@ public class FilesController {
         return map;
     }
 
+    /**
+     * 查询所有文件
+     * @return
+     */
     @GetMapping("/showFileList")
     public HashMap<String, Object> showFileList() {
         HashMap<String, Object> map = new HashMap<>();
@@ -165,6 +190,13 @@ public class FilesController {
         return map;
     }
 
+    /**
+     * 下载文件
+     * @param fileId
+     * @param userId
+     * @param response
+     * @param request
+     */
     @GetMapping("/downloadFile")
     public void downLoadFile(@RequestParam("fileId") Integer fileId,
                              @RequestParam("userId") Integer userId,
@@ -182,6 +214,16 @@ public class FilesController {
         }
     }
 
+    /**
+     * 更新文件
+     * @param listFile
+     * @param fileId
+     * @param userName
+     * @param departmentId
+     * @param dirId
+     * @param userId
+     * @return
+     */
     @PostMapping("/update")
     public HashMap<String, Object> updateVersion(@RequestParam("file") List<MultipartFile> listFile,
                                                  @RequestParam("fileId") Integer fileId,
@@ -203,7 +245,6 @@ public class FilesController {
         }
 
         Record recordResult=recordService.findRecordOnlyPass(record);
-        System.out.println(recordResult!=null);
         if (recordResult!=null){
             cuser=recordResult.getApplyName();
         }
@@ -256,6 +297,11 @@ public class FilesController {
         return hashMap;
     }
 
+    /**
+     * 获取文件版本
+     * @param originalFileId
+     * @return
+     */
     @GetMapping("/getFilesVersion")
     public HashMap<String, Object> getFilesVersion(@RequestParam("original") Integer originalFileId){
 
@@ -319,6 +365,7 @@ public class FilesController {
         log.setUserId(userId);
         int resLog=logService.addLog(log);
     }
+
 
     @GetMapping("/getFileRolesByUID")
     private RespBean getFileRolesByUID(@RequestParam("userId") Integer uid){

@@ -62,7 +62,7 @@
                         <span>所有待办事项</span>《{{ todoCount }}》
                         <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                     </div>
-                    <el-table :data="todoList" style="width: 100%" height="400">
+                    <el-table :data="todoList" style="width: 100%" height="400"  @current-change="handleCurrentChange">
                         <el-table-column width="40" type="index" label="No"></el-table-column>
                         <el-table-column prop="directory.dirName" label="四大项目"></el-table-column>
                         <el-table-column prop="content" label="认证内容"></el-table-column>
@@ -263,7 +263,6 @@ export default {
             }
             that.todoList = res.data.data;
             that.todoCount = res.data.count;
-            console.log(res.data);
         });
         this.$axios.get('api/plan/nowPlan?userId=' + this.userData.user.id).then((res) => {
             that.todoTodayList = res.data.data;
@@ -277,13 +276,11 @@ export default {
                     type: 'warning'
                 });
             }
-            console.log(res.data);
         });
     },
     methods: {
         handleCurrentChange(){
             this.$store.plan='seventh';
-            console.log('to process');
             this.$router.push('/process');
         },
         changeDate() {

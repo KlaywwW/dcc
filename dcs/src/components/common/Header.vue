@@ -69,12 +69,10 @@ export default {
                 this.$axios
                     .get('api/logout')
                     .then((result) => {
-                        console.log(result);
                         this.$message.success(result.data.message);
                         this.$router.push('/login');
                     })
                     .catch((error) => {
-                        console.log(error);
                     });
             }else if(command == 'toUser'){
                 this.$router.push('/userCenter');

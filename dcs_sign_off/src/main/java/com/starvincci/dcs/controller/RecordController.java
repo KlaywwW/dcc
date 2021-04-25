@@ -48,6 +48,12 @@ public class RecordController {
     private UserServiceImpl userService;
 
 
+    /**
+     * 提交申请
+     *
+     * @param strs
+     * @return
+     */
     @PostMapping("/add")
     public RespBean addRecord(@RequestBody String strs) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -63,41 +69,42 @@ public class RecordController {
         record.setInForce(null);
         record.setUserId(Integer.parseInt(jsonObject.get("userId").toString()));
         record.setFileId(Integer.parseInt(jsonObject.get("fileId").toString()));
-        System.out.println(record.toString());
 
         Record resRecord = new Record();
         if ("更新".equals(jsonObject.get("content").toString())) {
             Record record1 = recordService.findRecordOnlyApply(record);
             if (record1 != null) {
-                return RespBean.error("error","该文件已有用户提交更新申请");
+                return RespBean.error("error", "该文件已有用户提交更新申请");
             }
             Record record2 = recordService.findRecordOnlyPass(record);
             if (record2 != null) {
-                return RespBean.error("error","无法申请，存在已通过审核但并未更新文件的记录");
+                return RespBean.error("error", "无法申请，存在已通过审核但并未更新文件的记录");
             }
         } else {
             //        判断当前文件只能有一个用户申请更新，不能重复申请
             resRecord = recordService.findRecordOnly(record);
-            System.out.println(resRecord);
             if (resRecord != null) {
-                return RespBean.error("error","请勿重复申请");
+                return RespBean.error("error", "请勿重复申请");
             }
-            Record record1=recordService.selectPass(record);
-            if (record1!=null){
-                return RespBean.error("error","已提交过此申请并已通过,请刷新页面或重新登录");
+            Record record1 = recordService.selectPass(record);
+            if (record1 != null) {
+                return RespBean.error("error", "已提交过此申请并已通过,请刷新页面或重新登录");
             }
         }
 
 
         int res = recordService.addRecord(record);
         if (res == 1) {
-            return RespBean.ok("ok","申请已提交");
+            return RespBean.ok("ok", "申请已提交");
         }
 
 
-        return RespBean.error("error","申请提交失败");
+        return RespBean.error("error", "申请提交失败");
     }
 
+    /**
+     * 获取申请状态为待审核的信息
+     */
     @GetMapping("/getRecordStatusOne")
     public List<Record> getRecordStatusOne() {
         List<Record> resList = recordService.getRecordStatusOne();
@@ -108,6 +115,12 @@ public class RecordController {
         return resList;
     }
 
+    /**
+     * 根据不同状态获取信息
+     * @param stauts
+     * @param userId
+     * @return
+     */
     @GetMapping("/getRecordByStatus")
     public List<Record> getRecordByStatus(@RequestParam("status") Integer stauts, @RequestParam("userId") Integer userId) {
         List<Record> resList = recordService.getRecordByStatus(stauts, userId);
@@ -118,10 +131,14 @@ public class RecordController {
         return resList;
     }
 
+    /**
+     * 修改申请信息
+     * @param strs
+     * @return
+     */
     @PostMapping("/updateRecord")
     public RespBean updateRecord(@RequestBody String strs) {
 
-        System.out.println(strs);
 
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         JSONObject jsonObject = JSONObject.parseObject(strs);
@@ -131,7 +148,6 @@ public class RecordController {
         newRecord.setApplyPassDate(sf.format(new Date()));
         newRecord.setApplyStatus(status);
         newRecord.setId(Integer.parseInt(jsonObject.getString("id")));
-        System.out.println(newRecord.toString());
 //       通过 添加权限
         String look = "浏览";
         String download = "下载";
@@ -165,13 +181,13 @@ public class RecordController {
         record2.setApplyContent(jsonObject.getString("applyContent"));
         Record record = recordService.findRecordOnlyPass(record2);
         if (record != null && record.getApplyContent().equals(update)) {
-            return RespBean.error("error","审核失败,存在已通过审核但并未更新文件的记录");
+            return RespBean.error("error", "审核失败,存在已通过审核但并未更新文件的记录");
         }
         int res = recordService.updateRecord(newRecord);
         if (res == 1) {
-            return RespBean.ok("ok","操作成功");
+            return RespBean.ok("ok", "操作成功");
         }
-        return RespBean.error("error","操作失败");
+        return RespBean.error("error", "操作失败");
     }
 
 }

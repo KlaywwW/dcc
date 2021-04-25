@@ -29,7 +29,6 @@ export default {
             let that=this;
             this.$axios.get('api/file/showLog?userId='+this.user).then(
                 res=>{
-                    console.log(res.data)
                     that.tableData=res.data;
                 }
             )
@@ -40,7 +39,6 @@ export default {
          this.$axios
             .get('api/user/show')
             .then((result) => {
-                console.log(result.data.obj);
                 that.userOptions = result.data.obj;
             })
             .catch((error) => {

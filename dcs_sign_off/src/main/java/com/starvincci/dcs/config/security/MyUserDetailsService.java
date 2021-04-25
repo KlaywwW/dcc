@@ -52,7 +52,6 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Username :" + s + "not found");
         }
 
-        System.err.println(resultUser);
         List<UserMenu> userMenus=menuService.getUserMenuByUid(resultUser.getId());
         List<Roles> rolesList = roleService.getRoleByGroupId(resultUser.getRoleGroupId());
         List<UserRoleFile> roleFile = userRoleFileService.getAllByUserId(resultUser.getId());

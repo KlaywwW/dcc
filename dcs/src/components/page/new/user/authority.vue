@@ -117,8 +117,7 @@
         </el-tabs>
     </div>
 </template>
-    </div>
-</template>
+
 
 
 <script>
@@ -156,7 +155,6 @@ export default {
         // 用户组表格选择事件
         handleCurrentChange(val) {
             let that = this;
-            console.log(val);
             this.show = true;
             if (val != null) {
                 that.getRoleByGroup(val.groupId);
@@ -228,7 +226,6 @@ export default {
         },
         delRole(row) {
             let that = this;
-            console.log(row);
             this.$axios.get('api/role/delRole?groupId=' + row.userRoleGroup.groupId + '&roleId=' + row.roleId).then((res) => {
                 this.$message({
                     message: res.data.msg,
@@ -264,7 +261,6 @@ export default {
         handleCurrentChangeUser(val) {
             let that = this;
             this.fileRoleShow = true;
-            console.log(val);
             if (val != null) {
                 this.getFileRoles(val.id);
                 // that.userMenu = val;
@@ -272,7 +268,6 @@ export default {
         },
         // 删除权限
         delFileRole(row) {
-            console.log(row);
             this.$axios.get('/api/file/delFileRole?fileRoleId=' + row.id).then((res) => {
                 if (res.data.msg == 'ok') {
                     this.$message.success(res.data.obj);

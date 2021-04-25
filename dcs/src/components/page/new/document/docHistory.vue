@@ -57,7 +57,6 @@ export default {
     created() {
         let that = this;
         let original = JSON.parse(sessionStorage.getItem('original'));
-        console.log(original);
         this.$axios.get('api/file/getFilesVersion?original=' + original.originalFileId).then((res) => {
             that.tableData = res.data.data;
         });
@@ -75,7 +74,6 @@ export default {
                     return auth;
                 }
             }
-            console.log('kkk');
             let roleFile = this.userData.roleFile;
             for (let i = 0; i < roleFile.length; i++) {
                 if (roleFile[i].fileId == row.filesId && roleFile[i].operation == operation) {
@@ -108,7 +106,6 @@ export default {
             }
         },
         docDownload(row) {
-            console.log(row);
             if (!this.allot("download", row)) {
                 this.form.content = '下载';
                 this.dialogVisible = true;
@@ -125,7 +122,6 @@ export default {
                     .then((res) => {
                         this.form.name = '';
                         let fileName = row.filesName;
-                        console.log(fileName);
                         let blob = new Blob([res.data], {
                             type: 'application/octet-stream'
                         });

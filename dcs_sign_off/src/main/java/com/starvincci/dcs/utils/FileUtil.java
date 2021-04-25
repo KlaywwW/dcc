@@ -31,7 +31,6 @@ public class FileUtil {
             String fileName = file.getOriginalFilename();
             int size = (int) file.getSize();
             System.out.println(fileName + "-->" + size);
-            System.out.println(filesService.fileIsExist(fileName));
             if (filesService.fileIsExist(fileName)!=null){
                 System.err.println("已存在相同名称文件");
                 return false;

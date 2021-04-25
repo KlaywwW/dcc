@@ -46,9 +46,7 @@ export default {
         handleSelect(index) {
             let user = sessionStorage.getItem('userData');
             if (user != null) {
-                console.log(index);
                 if (index == '4') {
-                    console.log(this.$router.options);
                     this.$router.options.routes[1].children[2].meta.title = '品管作业指导书';
                     this.$router.push({
                         path: '/docList',

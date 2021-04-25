@@ -84,12 +84,10 @@ export default {
     methods: {
         select() {
             var that = this;
-            console.log(that.status);
             if (that.status != '' && that.status != null) {
                 this.$axios
                     .get('api/record/getRecordByStatus?status=' + that.status + '&userId=' + that.userData.user.id)
                     .then((result) => {
-                        console.log(result.data);
                         that.statusShow = true;
 
                         that.tableData = result.data;
@@ -113,7 +111,6 @@ export default {
                     this.$message.error(res.data.obj);
                 }
             });
-            console.log(that.user);
         },
         initUser(uid) {
             this.$axios.get('/api/user/refreshUser?userId=' + uid).then((res) => {

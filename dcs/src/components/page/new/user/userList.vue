@@ -186,7 +186,6 @@ export default {
         handleCurrentChangeUser(val) {
             let that = this;
             this.userShow = true;
-            console.log(val);
             if (val != null) {
                 this.getMenuById(val.id);
                 that.userMenu = val;
@@ -205,7 +204,6 @@ export default {
         },
         delMenu(row) {
             let that = this;
-            console.log(row);
             this.$axios.get('api/user/delUserMenu?mid=' + row.mid + '&uid=' + row.uid).then((res) => {
                 this.$message({
                     message: res.data.msg,
@@ -256,7 +254,6 @@ export default {
                     'Content-Type': 'application/json; charset=UTF-8'
                 }
             };
-            console.log(row);
             var _this = this;
             this.form.id = row.id;
             this.form.account = row.account;
@@ -274,7 +271,6 @@ export default {
         },
         operationUser() {
             let index = this.index; //index == 1 添加用户 index == 2 修改用户
-            console.log(this.form);
             if (index == 1) {
                 this.$axios
                     .post('api/user/addUser', this.form)
@@ -288,7 +284,6 @@ export default {
                 this.$axios
                     .post('api/user/updateUser/' + this.form.id, this.form)
                     .then((success) => {
-                        console.log(success);
                         if (success.statusText == 'OK') {
                             this.$message.success('修改成功');
                             this.clearForm();
@@ -337,7 +332,6 @@ export default {
                 .get('api/user/show', header)
                 .then((result) => {
                     this.tableData = result.data.obj;
-                    console.log(this.tableData);
                 })
                 .catch((error) => {
                     if (error.response.status == '403') {

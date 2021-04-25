@@ -1,6 +1,5 @@
 package com.starvincci.dcs.config.security;
 
-//import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starvincci.dcs.config.CustomAuthenticationEntryPoint;
@@ -63,22 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .httpBasic()
-//                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-//                    @Override
-//                    public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException, ServletException {
-//                        resp.setContentType("application/json;charset=utf-8");
-//                        PrintWriter out = resp.getWriter();
-//                        Map<String, Object> map = new HashMap<String, Object>();
-//                        map.put("code", 403);
-//                        map.put("message", "未登录");
-////                        if (authException instanceof InsufficientAuthenticationException) {
-////                            respBean.setMsg("请求失败，请联系管理员!");
-////                        }
-//                        out.write(new ObjectMapper().writeValueAsString(map));
-//                        out.flush();
-//                        out.close();
-//                    }
-//                })
                 //未登录时，进行json格式的提示，很喜欢这种写法，不用单独写一个又一个的类
                 .authenticationEntryPoint((request,response,authException) -> {
                     response.setContentType("application/json;charset=utf-8");
@@ -107,7 +90,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     PrintWriter out = response.getWriter();
                     Map<String, Object> map = new HashMap<String, Object>();
-                    System.out.println("登录失败!请联系管理员 o(╥﹏╥)o ");
                     map.put("code", 401);
                     if (ex instanceof UsernameNotFoundException || ex instanceof BadCredentialsException) {
                         map.put("message", "用户名或密码错误");
@@ -116,7 +98,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     } else {
                         map.put("message", "登录失败!请联系管理员 o(╥﹏╥)o ");
                     }
-                    System.out.println(map.get("message"));
                     out.write(objectMapper.writeValueAsString(map));
                     out.flush();
                     out.close();
@@ -130,8 +111,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                     HttpSession session = request.getSession();
                     session.setAttribute("userInfo", authentication);
-                    System.out.println(session);
-                    System.out.println("登录成功");
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
                     out.write(objectMapper.writeValueAsString(map));
@@ -148,7 +127,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("code", 403);
                     map.put("message", "权限不足");
-                    System.out.println("权限不足");
                     out.write(objectMapper.writeValueAsString(map));
                     out.flush();
                     out.close();
@@ -161,7 +139,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("code", 200);
                     map.put("message", "退出成功");
-                    System.out.println("退出登录");
                     map.put("data", authentication);
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();

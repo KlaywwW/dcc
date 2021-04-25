@@ -39,7 +39,6 @@ export default {
         approve(row, index) {
             // row.concat({"status":2})
             row['status'] = 2;
-            console.log(index);
             this.$axios
                 .post('api/record/updateRecord', row)
                 .then((res) => {
@@ -69,12 +68,10 @@ export default {
         },
         select() {
             var that = this;
-            console.log(that.status);
             if (that.status != '' && that.status != null) {
                 this.$axios
                     .get('api/record/getRecordByStatus?status=' + that.status + '&userId=' + that.userData.user.id)
                     .then((result) => {
-                        console.log(result.data);
                         that.statusShow = true;
 
                         that.tableData = result.data;
@@ -93,11 +90,9 @@ export default {
             this.$axios
                 .get('api/record/getRecordStatusOne')
                 .then((result) => {
-                    console.log(result.data);
                     that.tableData = result.data;
                 })
                 .catch((error) => {
-                    console.log(error);
                 });
         }
     },

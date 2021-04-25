@@ -1,7 +1,7 @@
 <template>
 	<div class="login-wrap">
 		<div class="ms-login">
-			<div class="ms-title">文控中心</div>
+			<div class="ms-title">文控系统</div>
 			<el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
 				<el-form-item prop="username">
 					<el-input v-model="param.username" placeholder="username" name="username">
@@ -50,13 +50,11 @@
 				data.append("password", this.param.password);
 				this.$axios.post('api/login', data)
 					.then(result => {
-						console.log(result);
 						sessionStorage.setItem("userData", JSON.stringify(result.data.data.principal.obj))
 						this.$message.success(result.data.message);
 						this.$router.push("/dashboard");
 					})
 					.catch(error => {
-						console.log(error.response);
 						if (error.response.data.message != null) {
 							this.$message.error(error.response.data.message);
 						}else{

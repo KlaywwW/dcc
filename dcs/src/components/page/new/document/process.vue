@@ -73,8 +73,7 @@ l<template>
                                 <el-table-column prop="dirName" label="四大标准" width="120" fixed></el-table-column>
                                 <el-table-column type="index" label="No" width="40"></el-table-column>
                                 <el-table-column prop="content" label="认证项目" fixed></el-table-column>
-                                <el-table-column label="收集资料">
-                                    <el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
+                                <el-table-column label="收集资料"><el-table-column prop="depPrincipal" label="被收集单位"></el-table-column>
                                     <el-table-column prop="planGather.planTime" label="计划完成时间"></el-table-column>
                                     <el-table-column label="实际完成时间" width="100">
                                         <template slot-scope="scope">
@@ -747,7 +746,7 @@ l<template>
                         </el-table>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="逾期未完成计划" name="seventh">
+                <el-tab-pane label="本人未完成计划" name="seventh">
                     <div>
                         <el-table
                             :data="todoTodayList"
@@ -1081,7 +1080,7 @@ export default {
                     return date.getTime() < Date.now() - 24 * 60 * 60 * 1000;
                 }
             },
-            tabIndex: '',
+            tabIndex: 0,
             tabTableData: [],
             filterData: [],
             finishTableData: [],
@@ -1091,11 +1090,13 @@ export default {
     },
     created() {
         let that = this;
-        console.log(this.$store.plan);
         if (this.$store.plan == null) {
             this.activeName = 'first';
         } else {
             this.activeName = this.$store.plan;
+            if(this.activeName=='seventh'){
+                this.tabIndex=6;
+            }
             that.initUserPlan(JSON.parse(sessionStorage.getItem('userData')).user.id);
         }
 
@@ -1123,7 +1124,6 @@ export default {
                 });
             })
             .catch((error) => {
-                console.log(error);
             });
 
         this.$axios.get('api/plan/getPlanFinish').then((res) => {
@@ -1145,7 +1145,6 @@ export default {
                 if (row.planAuth.users.length != 0) {
                     for (var i = 0; i < row.planAuth.users.length; i++) {
                         if (row.planAuth.users[i].id == value) {
-                            console.log(row.planAuth.users[i].username);
                             return true;
                         }
                     }
@@ -1154,12 +1153,10 @@ export default {
         },
         // 稽查人过滤
         filterPlanCheck(value, row) {
-            console.log(value);
             if (row.planCheck != null) {
                 if (row.planCheck.users.length != 0) {
                     for (var i = 0; i < row.planCheck.users.length; i++) {
                         if (row.planCheck.users[i].id == value) {
-                            console.log(row.planCheck.users[i].username);
                             return true;
                         }
                     }
@@ -1240,6 +1237,7 @@ export default {
             that.$axios
                 .get('api/plan/verify?planId=' + id + '&userId=' + userId + '&index=' + index)
                 .then((res) => {
+                    this.$message.success("操作成功");
                     if (that.tabIndex != 0 && that.tabIndex != 6) {
                         that.initDataDir(that.tabIndex);
                         return true;
@@ -1306,7 +1304,6 @@ export default {
         // 删除计划
         delPlan(row) {
             let that = this;
-            console.log(row);
             let userCount = 0;
             if (this.userData.user.roleGroupId == 1) {
                 userCount = 1;
@@ -1365,10 +1362,10 @@ export default {
                 }
                 if (that.tabIndex != 0 && that.tabIndex != 6) {
                     that.initDataDir(that.tabIndex);
-                    return true;
+                }else{
+                    that.initData();
                 }
                 that.initUserPlan(that.userData.user.id);
-                that.updatePlanShow = false;
                 that.updatePlanForm = {
                     id: '',
                     content: '',
@@ -1376,6 +1373,7 @@ export default {
                     depPrincipal: '',
                     planTime: ''
                 };
+                that.updatePlanShow=false;
             });
         },
         // 修改计划时间弹框的所需三个方法
@@ -1464,7 +1462,6 @@ export default {
                         return true;
                     }
                 } else {
-                    console.log(row);
                     that.formUpdate.checkUsers = planCheckUsers;
                     this.title = '修改计划稽核时间';
                     this.timeUpdateShow = true;
@@ -1487,8 +1484,6 @@ export default {
                 });
                 return true;
             }
-            console.log(this.formUpdate.checkUsers);
-            console.log(form);
             if (form.checkUsers.length <= 0) {
                 this.$message({
                     message: '请选择人员',
@@ -1497,7 +1492,6 @@ export default {
                 return true;
             }
             if (index == 2) {
-                console.log('修改认证计划时间');
                 this.$axios
                     .post('api/plan/updatePlanAuth', form)
                     .then((res) => {
@@ -1516,7 +1510,6 @@ export default {
                     })
                     .catch((err) => {});
             } else if (index == 3) {
-                console.log('修改稽核计划时间');
                 this.$axios
                     .post('api/plan/updatePlanCheck', form)
                     .then((res) => {
@@ -1602,7 +1595,6 @@ export default {
                 });
                 return true;
             }
-            console.log('添加稽核计划');
             this.$axios
                 .post('api/plan/addPlanCheck', form)
                 .then((res) => {
@@ -1684,7 +1676,6 @@ export default {
                 return true;
             }
 
-            console.log(form);
             this.$axios
                 .post('api/plan/addPlan', form)
                 .then((res) => {
@@ -1700,8 +1691,6 @@ export default {
         },
         // 添加收集计划并设定认证计划时间弹框所需方法
         settingPlan(row) {
-            console.log(this.userData);
-            console.log(row);
             if (row.planGather.actualTime == null) {
                 this.$message({
                     message: '请确认完成收集资料',
@@ -1744,7 +1733,6 @@ export default {
                 });
                 return true;
             }
-            console.log(form);
             this.$axios
                 .post('api/plan/addPlanAuth', form)
                 .then((res) => {
@@ -1781,13 +1769,11 @@ export default {
                     // 合并单元格
                     that.tableData = that.mergeTableRow(that.tableData, ['dirName']);
                     that.numFirst = res.data.count;
-                    console.log(that.tableData);
                 })
                 .catch((err) => {});
         },
         initDataDir(index) {
             this.$axios.get('/api/plan/getPlanByDir?dirId=' + index).then((res) => {
-                console.log(res.data.data);
                 this.tabTableData = res.data.data;
             });
         },
@@ -1807,7 +1793,7 @@ export default {
         },
         initUserPlan(userId) {
             let that = this;
-            this.$axios.get('api/plan/nowPlan?userId=' + userId).then((res) => {
+            this.$axios.get('api/plan/getPlanByUser?userId=' + userId).then((res) => {
                 that.todoTodayList = res.data.data;
             });
             // this.$axios.get('api/plan/getPlanByUser?userId=' + userId).then((res) => {

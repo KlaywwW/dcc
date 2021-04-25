@@ -50,10 +50,8 @@ export default {
         };
     },
     created() {
-        console.log(JSON.parse(sessionStorage.getItem('pdf')));
         let file = JSON.parse(sessionStorage.getItem('pdf'));
         this.pdfUrl = 'api/dir'+file.dirId+'/pdf' + file.departmentId + '/' + file.filesName;
-        console.log(this.pdfUrl);
     },
     methods: {
         prePage() {
@@ -74,9 +72,6 @@ export default {
         },
         password(updatePassword, reason) {
             updatePassword(prompt('password is "123456"'));
-            console.log('...reason...');
-            console.log(reason);
-            console.log('...reason...');
         },
         pageLoaded(e) {
             this.curPageNum = e;

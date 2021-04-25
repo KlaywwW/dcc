@@ -46,6 +46,11 @@ public class RoleController {
         return RespBean.ok("ok", roleService.getRoleByGroupId(groupId));
     }
 
+    /**
+     * 添加权限组
+     * @param strs
+     * @return
+     */
     @PostMapping("/addRoleGroup")
     public RespBean addRoleGroup(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -58,6 +63,11 @@ public class RoleController {
         return RespBean.error("添加失败");
     }
 
+    /**
+     * 修改权限组名
+     * @param strs
+     * @return
+     */
     @PostMapping("/updateGroupName")
     public RespBean updateGroupName(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -71,11 +81,20 @@ public class RoleController {
         return RespBean.error("修改失败");
     }
 
+    /**
+     * 获取所有权限
+     * @return
+     */
     @GetMapping("/getAllRoles")
     public RespBean getAllRoles() {
         return RespBean.ok("ok",roleService.getAllRoles());
     }
 
+    /**
+     * 给权限组添加权限
+     * @param strs
+     * @return
+     */
     @PostMapping("/addRolesToGroup")
     public RespBean addRolesToGroup(@RequestBody String strs) {
         JSONObject jsonObject = JSON.parseObject(strs);
@@ -93,6 +112,12 @@ public class RoleController {
         return RespBean.ok("添加失败");
     }
 
+    /**
+     * 删除权限
+     * @param groupId
+     * @param roleId
+     * @return
+     */
     @GetMapping("/delRole")
     public RespBean delRole(@RequestParam("groupId") Integer groupId,@RequestParam("roleId") Integer roleId){
         int result=roleService.delRole(groupId,roleId);

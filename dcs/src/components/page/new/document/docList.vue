@@ -181,7 +181,6 @@ export default {
         this.$axios.get('/api/user/refreshUser?userId=' + userData.user.id).then((res) => {
             sessionStorage.removeItem('userData');
             sessionStorage.setItem('userData', JSON.stringify(res.data.obj));
-            console.log(JSON.parse(sessionStorage.getItem('userData')));
             this.userData = JSON.parse(sessionStorage.getItem('userData'));
         });
         let user = this.userData.user;
@@ -212,7 +211,6 @@ export default {
         selectByDep() {
             var that = this;
             this.$axios.get('api/file/show?departmentId=' + that.depValue + '&dirId=' + that.dirId).then((res) => {
-                console.log(res.data.data);
                 for (var i = 0; i < res.data.data.length; i++) {
                     res.data.data[i].cdate = that.dateFormat(res.data.data[i].cdate);
                 }
@@ -275,7 +273,6 @@ export default {
         updateUpload(param, scope) {
             let that = this;
             let formData = new FormData();
-            console.log(param);
             formData.append('file', param.file);
             formData.append('fileId', param.data.fileId);
             formData.append('userName', this.userData.user.account);
@@ -305,7 +302,6 @@ export default {
                     return auth;
                 }
             }
-            console.log('kkk');
             let roleFile = this.userData.roleFile;
             for (let i = 0; i < roleFile.length; i++) {
                 if (roleFile[i].fileId == row.filesId && roleFile[i].operation == operation) {
@@ -328,7 +324,6 @@ export default {
                     sessionStorage.setItem('pdf', JSON.stringify(row));
                     this.$axios.get('api/file/showPdfRecord?fileId=' + row.filesId + '&userId=' + this.userData.user.id).then((res) => {
                         this.$router.push('/showPdf');
-                        console.log(row);
                     });
                 } else {
                     this.$message({
@@ -355,7 +350,6 @@ export default {
                     .then((res) => {
                         this.form.name = '';
                         let fileName = row.filesName;
-                        console.log(fileName);
                         let blob = new Blob([res.data], {
                             type: 'application/octet-stream'
                         });
@@ -375,7 +369,6 @@ export default {
             }
         },
         docUpdate(row) {
-            console.log(row);
             if (!this.allot('update', row)) {
                 this.form.content = '更新';
                 this.dialogVisible = true;
@@ -443,8 +436,6 @@ export default {
         submitUpload() {
             let that = this;
             // this.isoNo = value;
-            console.log(that.$refs.upload._data.uploadFiles.length);
-            console.log(that.userData);
             let count = 0;
             if (that.$refs.upload._data.uploadFiles.length === 0) {
                 that.$message({
@@ -457,11 +448,9 @@ export default {
         },
         //  移除待上传的文件
         handleRemove(file, fileList) {
-            console.log(file, fileList);
         },
         // 查询待上传的文件
         handlePreview(file) {
-            console.log(file);
         },
         // 给表头设置颜色
         tableHeaderColor({ row, rowIndex, columnIndex }) {
@@ -500,7 +489,6 @@ export default {
         getdocList() {
             var that = this;
             this.$axios.get('api/file/showAllByDir?dirId=' + that.dirId).then((res) => {
-                console.log(res.data.data);
                 for (var i = 0; i < res.data.data.length; i++) {
                     res.data.data[i].cdate = that.dateFormat(res.data.data[i].cdate);
                 }
